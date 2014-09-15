@@ -15,11 +15,19 @@ public class Student {
 		this.initialise();
 	}
 	
+	public String getName() {
+		return this.name;
+	}
+	
 	private void initialise() {
 		// fake/not very usefully implemented ID system atm
 		for (int testID = 0; testID < this.numOfTests; testID++) {
 			this.results.put(testID, -1);
 		}
+	}
+	
+	public int getResult(int testID) {
+		return this.results.get(testID);
 	}
 	
 	public void setResult(int testID, int percent) {
