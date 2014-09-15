@@ -1,28 +1,43 @@
 package testStore;
 
+import java.util.Collection;
 import java.util.HashMap;
 
 public class TestDatabase {
-	HashMap<Integer, HashMap<Integer, Integer>> studentResults;
-	HashMap<Integer, String> studentNames;
-	HashMap<Integer, String> testNames;
+	//		student ID, student
+	HashMap<Integer, Student> students;
+	//		test ID, name
+	HashMap<Integer, String> tests;
 	
-	int studentCount = 0, testCount = 0;
+	int numOfStudents = 0, numOfTests = 0;
 	
 	public TestDatabase() {
-		this.studentResults = new HashMap<Integer, HashMap<Integer, Integer>>();
-		this.studentNames = new HashMap<Integer, String>();
-		this.testNames = new HashMap<Integer, String>();
+		this.students = new HashMap<Integer, Student>();
+		this.tests = new HashMap<Integer, String>();
+		
+		this.tests.put(0, "English");
+		this.tests.put(1, "Maths");
+		this.numOfTests = 2;
 	}
 	
 	public void addStudent(String name) {
-		this.studentResults.put(this.studentCount, new HashMap<Integer, Integer>());
-		for (int testName: testNames.keySet()) {
-			//HashMap<Integer, Integer> studentResult = studentResults.get(this.studentCount);
-			// loop through each test identifier
-			// add a score of -1 for that test for new student
-		}
-		this.studentNames.put(this.studentCount, name);
-		this.studentCount++;
+		//Student student = new Student(name, this.numOfTests);
+		this.students.put(this.numOfStudents, new Student(name, this.numOfTests));
+		this.numOfStudents++;
+	}
+	
+	public void printResults(int studentID) {
+		this.students.get(studentID).printResults();
+	}
+	
+	public Collection<Integer> getResults(int studentID) {
+		return this.students.get(studentID).getResults();
+	}
+	
+	public static void main(String[] args) {
+		TestDatabase db = new TestDatabase();
+		db.addStudent("Ben");
+		//db.printResults(0);
+		System.out.println(db.getResults(0));
 	}
 }
