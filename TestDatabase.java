@@ -1,58 +1,72 @@
 package testStore;
 
-import java.util.Collection;
 import java.util.HashMap;
 
 public class TestDatabase {
 	//		student ID, student
-	HashMap<Integer, Student> students;
+	private HashMap<Integer, Student> students;
 	//		test ID, name
-	HashMap<Integer, String> tests;
+	public HashMap<Integer, String> tests;
 	
-	int numOfStudents = 0, numOfTests = 0;
+	public int numOfStudents = 0, numOfTests = 0;
 	
 	public TestDatabase() {
 		this.students = new HashMap<Integer, Student>();
 		this.tests = new HashMap<Integer, String>();
-		
-		this.tests.put(0, "English");
-		this.tests.put(1, "Maths");
-		this.numOfTests = 2;
 	}
 	
-	public void addStudent(String name) {
-		//Student student = new Student(name, this.numOfTests);
-		this.students.put(this.numOfStudents, new Student(name, this.numOfTests));
+	public int addStudent(String name) {
+		int id = this.numOfStudents;
+		this.students.put(id, new Student(name));
 		this.numOfStudents++;
+		return id;
 	}
 	
-	public void printResults(int studentID) {
-		this.students.get(studentID).printResults();
+	public int addTest(String name) {
+		int id = this.numOfTests;
+		this.tests.put(id, name);
+		this.numOfTests++;
+		return id;
 	}
 	
-	public Collection<Integer> getResults(int studentID) {
-		return this.students.get(studentID).getResults();
+	public String getStudentName(int id) {
+		return this.students.get(id).getName();
 	}
 	
-	public char toGrade(int percent) {
-		if (percent >= 90) { return 'A'; }
-		else if (percent >= 80) { return 'B'; }
-		else if (percent >= 70) { return 'C'; }
-		else if (percent >= 60) { return 'D'; }
-		else if (percent >= 50) { return 'E'; }
-		else if (percent >= 40) { return 'F'; }
-		else if (percent >= 30) { return 'G'; }
-		else if (percent == 0) { return '-'; }
-		else { return 'U'; }
+	public String getTestName(int id) {
+		return this.tests.get(id);
 	}
 	
-	public int getResultOf(int studentID, int testID) {
-		return this.students.get(studentID).getResult(testID);
+	public void getResults(int studentID) {
+		System.out.println("implemented here, or in TestInterface? probably latter~");
+	}
+	
+	public String toGrade(int percent) {
+		if (percent >= 90) { return "A*"; }
+		else if (percent >= 80) { return "A"; }
+		else if (percent >= 70) { return "B"; }
+		else if (percent >= 60) { return "C"; }
+		else if (percent >= 50) { return "D"; }
+		else if (percent >= 40) { return "E"; }
+		else if (percent == -1) { return "-"; }
+		else { return "U"; } // below 40%
+	}
+	
+	public int getResultOfStudent(int studentID, int testID) {
+		try {
+			return this.students.get(studentID).getResultOf(testID);
+		} catch (NullPointerException e) {
+			return -2;
+		}
+	}
+	
+	public void setResultOfStudent(int studentID, int testID, int percent) {
+		this.students.get(studentID).setResult(testID, percent);
 	}
 	
 	public void printResultOf(int studentID, int testID) {
-		int result = this.getResultOf(studentID, testID);
-		char grade = this.toGrade(result);
+		int result = this.getResultOfStudent(studentID, testID);
+		String grade = this.toGrade(result);
 		System.out.println(result + "% " + grade);
 	}
 	
@@ -65,13 +79,12 @@ public class TestDatabase {
 		return -1;
 	}
 	
-	public static void main(String[] args) {
-		TestDatabase db = new TestDatabase();
-		db.addStudent("Ben");
-		System.out.println(db.getResults(0));
-		db.students.get(0).setResult(0, 95);
-		int result = db.students.get(0).getResult(0);
-		db.printResultOf(0, 0);
-		System.out.println(db.IdOfStudent("Ben"));
+	public int IdOfTest(String name) {
+		for (int i = 0; i < this.tests.size(); i++) {
+			if (name.equals(this.tests.get(i))) {
+				return i;
+			}
+		}
+		return -1;
 	}
 }
