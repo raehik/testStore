@@ -22,13 +22,6 @@ public class TestDatabase {
 		return id;
 	}
 	
-	public int addTest(String name, String set, int day, int month, int year) {
-		int id = this.nextTestId;
-		this.tests.put(id, new Test(name, set, day, month, year));
-		this.nextTestId++;
-		return id;
-	}
-	
 	public String getStudentName(int id) {
 		return this.students.get(id).getName();
 	}
@@ -48,9 +41,20 @@ public class TestDatabase {
 	public Integer[] getAllStudentIds() {
 		return this.students.keySet().toArray(new Integer[this.students.size()]);
 	}
+	
+	public int addTest(String name, String set, int day, int month, int year) {
+		int id = this.nextTestId;
+		this.tests.put(id, new Test(name, set, day, month, year));
+		this.nextTestId++;
+		return id;
+	}
 
 	public String getTestName(int id) {
 		return this.tests.get(id).getName();
+	}
+	
+	public String getTestSet(int id) {
+		return this.tests.get(id).getSet();
 	}
 	
 	public String getTestDate(int id) {
@@ -62,6 +66,7 @@ public class TestDatabase {
 	}
 	
 	public String toGrade(int percent) {
+		// fixed table of percent -> grade
 		if (percent >= 90) { return "A*"; }
 		else if (percent >= 80) { return "A"; }
 		else if (percent >= 70) { return "B"; }
@@ -78,6 +83,8 @@ public class TestDatabase {
 		System.out.println(result + "% " + grade);
 	}
 	
+	// TODO: these should return an *array* of IDs matching the name.
+	/*
 	public int IdOfStudent(String name) {
 		for (int i = 0; i < this.students.size(); i++) {
 			if (name == this.students.get(i).getName()) {
@@ -95,4 +102,5 @@ public class TestDatabase {
 		}
 		return -1;
 	}
+	*/
 }
