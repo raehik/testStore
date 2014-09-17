@@ -28,6 +28,10 @@ public class TestInterfaceCli {
 		}
 		System.out.println(headerRow);
 		
+		String headerBorder = "";
+		for (; headerBorder.length() < headerRow.length(); headerBorder+= "¯");
+		System.out.println(headerBorder);
+		
 		// print table contents
 		for (Integer id: this.db.getAllStudentIds()) {
 			String row = String.format("%010d", id) + " | ";
