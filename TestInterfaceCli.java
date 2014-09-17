@@ -6,6 +6,16 @@ import java.util.Scanner;
 public class TestInterfaceCli {
 	public TestDatabase db;
 	
+	public static final String ANSI_RESET = "\u001B[0m";
+	public static final String ANSI_BLACK = "\u001B[30m";
+	public static final String ANSI_RED = "\u001B[31m";
+	public static final String ANSI_GREEN = "\u001B[32m";
+	public static final String ANSI_YELLOW = "\u001B[33m";
+	public static final String ANSI_BLUE = "\u001B[34m";
+	public static final String ANSI_PURPLE = "\u001B[35m";
+	public static final String ANSI_CYAN = "\u001B[36m";
+	public static final String ANSI_WHITE = "\u001B[37m";
+	
 	public void setResultsFor(int testId) {
 		int percent;
 		boolean inRange;
@@ -66,14 +76,14 @@ public class TestInterfaceCli {
 		for (; namePadding.length() < longestName; namePadding+= " ");
 		
 		// print header
-		String headerRow = "Student ID | ";
-		headerRow += ("Student name" + namePadding).substring(0, longestName);
+		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | ";
+		headerRow += ANSI_GREEN + ("Student name" + namePadding).substring(0, longestName) + ANSI_RESET;
 		
 		for (Integer id: db.getAllTestIds()) {
 			headerRow += " | ";
 			String testName = this.db.getTestName(id);
 			int headerLength = Math.max(9, testName.length());
-			headerRow += (testName + "        ").substring(0, headerLength);
+			headerRow += ANSI_CYAN + (testName + "        ").substring(0, headerLength) + ANSI_RESET;
 		}
 		System.out.println(headerRow);
 		
@@ -83,8 +93,8 @@ public class TestInterfaceCli {
 		
 		// print table contents
 		for (Integer id: this.db.getAllStudentIds()) {
-			String row = String.format("%010d", id) + " | ";
-			row += (this.db.getStudentName(id) + namePadding).substring(0,longestName);
+			String row = ANSI_RED + String.format("%010d", id) + ANSI_RESET + " | ";
+			row += ANSI_GREEN + (this.db.getStudentName(id) + namePadding).substring(0,longestName) + ANSI_RESET;
 			for (Integer tId: db.getAllTestIds()) {
 				result = this.db.getResultOfStudent(id, tId);
 				row += " | ";
@@ -95,7 +105,7 @@ public class TestInterfaceCli {
 					testNamePadding.length() < this.db.getTestName(tId).length();
 					testNamePadding+= " "
 				);
-				row += (gradeCell + testNamePadding).substring(0, this.db.getTestName(tId).length());
+				row += ANSI_CYAN + (gradeCell + testNamePadding).substring(0, this.db.getTestName(tId).length()) + ANSI_RESET;
 			}
 			System.out.println(row);
 		}
