@@ -5,36 +5,35 @@ import java.util.HashMap;
 public class Student {
 	private String name;
 	
-	// results are stored as a hashmap of test identifier -> percentage
+	// results are stored as a hashmap of test identifier -> result
 	// e.g. 1 -> 56
 	// if student did not take a test, no identifier will exist for it.
+	// results are not forced to be between 0 and 100 -- however such an
+	// implementation may be very useful in any classes using this one.
 	private HashMap<Integer, Integer> results;
 	
-	// initialise new Student with name as argument.
 	public Student(String name) {
-		// remove trailing whitespace from name
+		// TODO: remove trailing whitespace from name
 		this.name = name;
-		results = new HashMap<Integer, Integer>();
+		this.results = new HashMap<Integer, Integer>();
 	}
 	
-	// get the name of the student.
 	public String getName() {
 		return this.name;
 	}
 	
-	// get result of the student for a specified test by testID.
 	public int getResultOf(int testId) {
 		try {
 			return this.results.get(testId);
 		} catch (NullPointerException e) {
+			// return -1 for non-existent tests (i.e. did not take)
 			return -1;
 		}
 	}
 	
-	// set the result of student for specified test by testID, to the specified percentage 0 ≤ x ≤ 100
 	public void setResult(int testId, int percent) {
-		// return 0 if percent out-of-range
-		// return -1 if testID does not exist
+		// TODO: maybe 2 separate methods for this: newResult and
+		//       changeResult?
 		this.results.put(testId, percent);
 	}
 }
