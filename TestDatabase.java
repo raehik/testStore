@@ -26,16 +26,17 @@ public class TestDatabase {
 		return this.students.get(id).getName();
 	}
 	
-	public int getResultOfStudent(int studentID, int testID) {
-		try {
-			return this.students.get(studentID).getResultOf(testID);
-		} catch (NullPointerException e) {
-			return -2;
-		}
+	public int getResultOfStudent(int studentId, int testId) {
+		return this.students.get(studentId).getResultOf(testId);
 	}
 	
-	public void setResultOfStudent(int studentID, int testID, int percent) {
-		this.students.get(studentID).setResult(testID, percent);
+	public int setResultOfStudent(int studentId, int testId, int percent) {
+		if (percent >= 0 & percent <= 100) {
+			this.students.get(studentId).setResult(testId, percent);
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 	
 	public Integer[] getAllStudentIds() {
@@ -75,12 +76,6 @@ public class TestDatabase {
 		else if (percent >= 40) { return "E"; }
 		else if (percent == -1) { return "-"; }
 		else { return "U"; } // below 40%
-	}
-	
-	public void printResultOf(int studentID, int testID) {
-		int result = this.getResultOfStudent(studentID, testID);
-		String grade = this.toGrade(result);
-		System.out.println(result + "% " + grade);
 	}
 	
 	// TODO: these should return an *array* of IDs matching the name.
