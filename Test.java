@@ -1,7 +1,5 @@
 package testStore;
 
-import java.util.HashMap;
-
 public class Test {
 	private String name, set;
 	// date variables for when the test was set
