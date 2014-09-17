@@ -3,57 +3,34 @@ package testStore;
 import java.util.HashMap;
 
 public class TestDatabase {
-	//		student ID, student
+	//		student ID, Student
 	private HashMap<Integer, Student> students;
 	//		test ID, name
-	public HashMap<Integer, String> tests;
+	public HashMap<Integer, Test> tests;
 	
-	public int numOfStudents = 0, numOfTests = 0;
+	public int nextStudentId, nextTestId;
 	
 	public TestDatabase() {
 		this.students = new HashMap<Integer, Student>();
-		this.tests = new HashMap<Integer, String>();
+		this.tests = new HashMap<Integer, Test>();
 	}
 	
 	public int addStudent(String name) {
-		int id = this.numOfStudents;
+		int id = this.nextStudentId;
 		this.students.put(id, new Student(name));
-		this.numOfStudents++;
+		this.nextStudentId++;
 		return id;
 	}
 	
-	public int addTest(String name) {
-		int id = this.numOfTests;
-		this.tests.put(id, name);
-		this.numOfTests++;
+	public int addTest(String name, String set, int day, int month, int year) {
+		int id = this.nextTestId;
+		this.tests.put(id, new Test(name, set, day, month, year));
+		this.nextTestId++;
 		return id;
 	}
 	
 	public String getStudentName(int id) {
 		return this.students.get(id).getName();
-	}
-	
-	public Integer[] getAllStudentIDs() {
-		return this.students.keySet().toArray(new Integer[this.students.size()]);
-	}
-	
-	public String getTestName(int id) {
-		return this.tests.get(id);
-	}
-	
-	public void getResults(int studentID) {
-		System.out.println("implemented here, or in TestInterface? probably latter~");
-	}
-	
-	public String toGrade(int percent) {
-		if (percent >= 90) { return "A*"; }
-		else if (percent >= 80) { return "A"; }
-		else if (percent >= 70) { return "B"; }
-		else if (percent >= 60) { return "C"; }
-		else if (percent >= 50) { return "D"; }
-		else if (percent >= 40) { return "E"; }
-		else if (percent == -1) { return "-"; }
-		else { return "U"; } // below 40%
 	}
 	
 	public int getResultOfStudent(int studentID, int testID) {
@@ -66,6 +43,33 @@ public class TestDatabase {
 	
 	public void setResultOfStudent(int studentID, int testID, int percent) {
 		this.students.get(studentID).setResult(testID, percent);
+	}
+	
+	public Integer[] getAllStudentIds() {
+		return this.students.keySet().toArray(new Integer[this.students.size()]);
+	}
+
+	public String getTestName(int id) {
+		return this.tests.get(id).getName();
+	}
+	
+	public String getTestDate(int id) {
+		return this.tests.get(id).getDate();
+	}
+	
+	public Integer[] getAllTestIds() {
+		return this.tests.keySet().toArray(new Integer[this.tests.size()]);
+	}
+	
+	public String toGrade(int percent) {
+		if (percent >= 90) { return "A*"; }
+		else if (percent >= 80) { return "A"; }
+		else if (percent >= 70) { return "B"; }
+		else if (percent >= 60) { return "C"; }
+		else if (percent >= 50) { return "D"; }
+		else if (percent >= 40) { return "E"; }
+		else if (percent == -1) { return "-"; }
+		else { return "U"; } // below 40%
 	}
 	
 	public void printResultOf(int studentID, int testID) {

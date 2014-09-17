@@ -23,18 +23,18 @@ public class Student {
 	}
 	
 	// get result of the student for a specified test by testID.
-	public int getResultOf(int testID) {
+	public int getResultOf(int testId) {
 		try {
-			return this.results.get(testID);
+			return this.results.get(testId);
 		} catch (NullPointerException e) {
 			return -1;
 		}
 	}
 	
 	// set the result of student for specified test by testID, to the specified percentage 0 ≤ x ≤ 100
-	public void setResult(int testID, int percent) {
+	public void setResult(int testId, int percent) {
 		// return 0 if percent out-of-range
 		// return -1 if testID does not exist
-		this.results.put(testID, percent);
+		this.results.put(testId, percent);
 	}
 }
