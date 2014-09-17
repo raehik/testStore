@@ -20,7 +20,7 @@ public class TestInterfaceCli {
 			System.out.print(i + " | " + this.db.getStudentName(i));
 			for (int j = 0; j < this.db.numOfTests; j++) {
 				result = this.db.getResultOfStudent(i, j);
-				System.out.print(" | " + result + " (" + this.db.toGrade(result) + "%)");
+				System.out.print(" | " + result + "% (" + this.db.toGrade(result) + ")");
 			}
 			System.out.println();
 		}
