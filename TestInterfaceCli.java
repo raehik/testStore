@@ -9,31 +9,42 @@ public class TestInterfaceCli {
 	public void printDatabase() {
 		int result;
 		
-		// print header
-		System.out.print("Student ID | Student name");
-		for (Integer id: db.getAllTestIds()) {
-			System.out.print(" | " + this.db.getTestName(id) + " result (%)");
-		}
-		System.out.println();
-		
-		int longestName = 0;
+		int longestName = 12;
 		for (Integer id: this.db.getAllStudentIds()) {
 			longestName = Math.max(longestName, this.db.getStudentName(id).length());
 		}
 		String namePadding = "";
 		for (int i = 0; i<longestName; i++) namePadding+= " ";
 		
+		// print header
+		String headerRow = "Student ID | ";
+		headerRow += ("Student name" + namePadding).substring(0, longestName);
+		
+		for (Integer id: db.getAllTestIds()) {
+			headerRow += " | ";
+			String testName = this.db.getTestName(id);
+			int headerLength = Math.max(9, testName.length());
+			headerRow += (testName + "        ").substring(0, headerLength);
+		}
+		System.out.println(headerRow);
+		
 		// print table contents
 		for (Integer id: this.db.getAllStudentIds()) {
-			System.out.print(id + " | " + (this.db.getStudentName(id) + namePadding).substring(0,longestName));
+			String cell = String.format("%010d", id) + " | ";
+			cell += (this.db.getStudentName(id) + namePadding).substring(0,longestName);
 			for (Integer tId: db.getAllTestIds()) {
 				result = this.db.getResultOfStudent(id, tId);
-				String cell = " | ";
-				cell += ("  " + result).substring(("  " + result).length()-3) + "%";
-				cell += " (" + (this.db.toGrade(result) + " ").substring(0, 2) + ")";
-				System.out.print(cell);
+				cell += " | ";
+				String gradeCell = ("  " + result).substring(("" + result).length()-1) + "%";
+				gradeCell += " (" + (this.db.toGrade(result) + ") ").substring(0, 3);
+				String testNamePadding = "";
+				for (;
+					testNamePadding.length() < this.db.getTestName(tId).length();
+					testNamePadding+= " "
+				);
+				cell += (gradeCell + testNamePadding).substring(0, this.db.getTestName(tId).length());
 			}
-			System.out.println();
+			System.out.println(cell);
 		}
 	}
 	
@@ -83,15 +94,15 @@ public class TestInterfaceCli {
 	
 	public void setResultsFor(int testID) {
 		int percent;
-		for (int i = 0; i < this.db.numOfStudents; i++) {
+		for (Integer id: this.db.getAllStudentIds()) {
 			// prompt for percentage
-			System.out.println("Result for " + this.db.getStudentName(i) + " (ID " + i + ") (%): ");
+			System.out.println("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
 			try {
 				percent = new Scanner(System.in).nextInt();
 			} catch (InputMismatchException e) {
 				percent = 0;
 			} finally {}
-			this.db.setResultOfStudent(i, testID, percent);
+			this.db.setResultOfStudent(id, testID, percent);
 		}
 	}
 	
