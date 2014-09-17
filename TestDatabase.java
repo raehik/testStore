@@ -31,11 +31,14 @@ public class TestDatabase {
 	}
 	
 	public int setResultOfStudent(int studentId, int testId, int percent) {
+		/* Set Student `studentId`'s result for Test `testId` to `percent`.
+		Returns 1 if percent is not that.
+		*/
 		if (percent >= 0 & percent <= 100) {
 			this.students.get(studentId).setResult(testId, percent);
-			return 1;
-		} else {
 			return 0;
+		} else {
+			return 1;
 		}
 	}
 	
