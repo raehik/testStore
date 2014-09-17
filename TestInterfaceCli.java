@@ -1,5 +1,6 @@
 package testStore;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TestInterfaceCli {
@@ -10,17 +11,27 @@ public class TestInterfaceCli {
 		
 		// print header
 		System.out.print("Student ID | Student name");
-		for (int i = 0; i < this.db.numOfTests; i++) {
-			System.out.print(" | " + this.db.getTestName(i) + " result (%)");
+		for (Integer id: db.getAllTestIds()) {
+			System.out.print(" | " + this.db.getTestName(id) + " result (%)");
 		}
 		System.out.println();
 		
+		int longestName = 0;
+		for (Integer id: this.db.getAllStudentIds()) {
+			longestName = Math.max(longestName, this.db.getStudentName(id).length());
+		}
+		String namePadding = "";
+		for (int i = 0; i<longestName; i++) namePadding+= " ";
+		
 		// print table contents
-		for (int i = 0; i < this.db.numOfStudents; i++) {
-			System.out.print(i + " | " + this.db.getStudentName(i));
-			for (int j = 0; j < this.db.numOfTests; j++) {
-				result = this.db.getResultOfStudent(i, j);
-				System.out.print(" | " + result + "% (" + this.db.toGrade(result) + ")");
+		for (Integer id: this.db.getAllStudentIds()) {
+			System.out.print(id + " | " + (this.db.getStudentName(id) + namePadding).substring(0,longestName));
+			for (Integer tId: db.getAllTestIds()) {
+				result = this.db.getResultOfStudent(id, tId);
+				String cell = " | ";
+				cell += ("  " + result).substring(("  " + result).length()-3) + "%";
+				cell += " (" + (this.db.toGrade(result) + " ").substring(0, 2) + ")";
+				System.out.print(cell);
 			}
 			System.out.println();
 		}
@@ -75,17 +86,20 @@ public class TestInterfaceCli {
 		for (int i = 0; i < this.db.numOfStudents; i++) {
 			// prompt for percentage
 			System.out.println("Result for " + this.db.getStudentName(i) + " (ID " + i + ") (%): ");
-			
-			percent = new Scanner(System.in).nextInt();
+			try {
+				percent = new Scanner(System.in).nextInt();
+			} catch (InputMismatchException e) {
+				percent = 0;
+			} finally {}
 			this.db.setResultOfStudent(i, testID, percent);
 		}
 	}
 	
 	public void addSet(String testName) {
-		int testID = this.db.addTest(testName);
+		int testID = this.db.addTest(testName, "true", 2, 2, 2014);
 		System.out.println(testID);
-		for (int i = 0; i < this.db.numOfStudents; i++) {
-			this.db.setResultOfStudent(i, testID, 10);
+		for (Integer id: this.db.getAllStudentIds()) {
+			this.db.setResultOfStudent(id, testID, 10);
 		}
 	}
 	
@@ -112,7 +126,7 @@ public class TestInterfaceCli {
 		//p(this.db.getResults(student1));
 		
 		this.bulkAddStudents(5);
-		int test1 = this.db.addTest("Computer Science 1");
+		int test1 = this.db.addTest("Computer Science 1", "true", 2, 2, 2014);
 		this.setResultsFor(test1);
 		this.printDatabase();
 	}
