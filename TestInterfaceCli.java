@@ -30,11 +30,11 @@ public class TestInterfaceCli {
 		
 		// print table contents
 		for (Integer id: this.db.getAllStudentIds()) {
-			String cell = String.format("%010d", id) + " | ";
-			cell += (this.db.getStudentName(id) + namePadding).substring(0,longestName);
+			String row = String.format("%010d", id) + " | ";
+			row += (this.db.getStudentName(id) + namePadding).substring(0,longestName);
 			for (Integer tId: db.getAllTestIds()) {
 				result = this.db.getResultOfStudent(id, tId);
-				cell += " | ";
+				row += " | ";
 				String gradeCell = ("  " + result).substring(("" + result).length()-1) + "%";
 				gradeCell += " (" + (this.db.toGrade(result) + ") ").substring(0, 3);
 				String testNamePadding = "";
@@ -42,9 +42,9 @@ public class TestInterfaceCli {
 					testNamePadding.length() < this.db.getTestName(tId).length();
 					testNamePadding+= " "
 				);
-				cell += (gradeCell + testNamePadding).substring(0, this.db.getTestName(tId).length());
+				row += (gradeCell + testNamePadding).substring(0, this.db.getTestName(tId).length());
 			}
-			System.out.println(cell);
+			System.out.println(row);
 		}
 	}
 	
