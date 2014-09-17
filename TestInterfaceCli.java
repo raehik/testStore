@@ -9,7 +9,7 @@ public class TestInterfaceCli {
 		int result;
 		
 		// print header
-		System.out.print("Student ID | Student name | ");
+		System.out.print("Student ID | Student name");
 		for (int i = 0; i < this.db.numOfTests; i++) {
 			System.out.print(" | " + this.db.getTestName(i) + " result (%)");
 		}
