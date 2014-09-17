@@ -33,6 +33,10 @@ public class TestDatabase {
 		return this.students.get(id).getName();
 	}
 	
+	public Integer[] getAllStudentIDs() {
+		return this.students.keySet().toArray(new Integer[this.students.size()]);
+	}
+	
 	public String getTestName(int id) {
 		return this.tests.get(id);
 	}
