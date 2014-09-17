@@ -14,7 +14,7 @@ public class TestInterfaceCli {
 			longestName = Math.max(longestName, this.db.getStudentName(id).length());
 		}
 		String namePadding = "";
-		for (int i = 0; i<longestName; i++) namePadding+= " ";
+		for (; namePadding.length() < longestName; namePadding+= " ");
 		
 		// print header
 		String headerRow = "Student ID | ";
