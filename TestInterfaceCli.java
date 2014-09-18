@@ -87,8 +87,7 @@ public class TestInterfaceCli {
 		}
 		System.out.println(headerRow);
 		
-		String headerBorder = "";
-		for (; headerBorder.length() < headerRow.length(); headerBorder+= "¯");
+		String headerBorder = headerRow.replaceAll("\u001B\\[\\d\\d?m", "").replaceAll(".", "-");
 		System.out.println(headerBorder);
 		
 		// print table contents
