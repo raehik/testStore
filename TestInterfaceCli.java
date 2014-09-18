@@ -103,18 +103,16 @@ public class TestInterfaceCli {
 		for (Integer id: this.db.getAllStudentIds()) {
 			longestName = Math.max(longestName, this.db.getStudentName(id).length());
 		}
-		String namePadding = "";
-		for (; namePadding.length() < longestName; namePadding+= " ");
 		
 		// print header
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | ";
-		headerRow += ANSI_GREEN + ("Student name" + namePadding).substring(0, longestName) + ANSI_RESET;
+		headerRow += ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
 		
 		for (Integer id: db.getAllTestIds()) {
 			headerRow += " | ";
 			String testName = this.db.getTestName(id);
 			int headerLength = Math.max(9, testName.length());
-			headerRow += ANSI_CYAN + (testName + "        ").substring(0, headerLength) + ANSI_RESET;
+			headerRow += ANSI_CYAN + padString(testName, headerLength) + ANSI_RESET;
 		}
 		System.out.println(headerRow);
 		
@@ -124,19 +122,14 @@ public class TestInterfaceCli {
 		// print table contents
 		for (Integer id: this.db.getAllStudentIds()) {
 			String row = ANSI_RED + String.format("%010d", id) + ANSI_RESET + " | ";
-			row += ANSI_GREEN + (this.db.getStudentName(id) + namePadding).substring(0,longestName) + ANSI_RESET;
+			row += ANSI_GREEN + padString(this.db.getStudentName(id), longestName) + ANSI_RESET;
 			for (Integer tId: db.getAllTestIds()) {
 				result = this.db.getResultOfStudent(id, tId);
 				row += " | ";
-				String gradeCell = ("  " + result).substring(("" + result).length()-1) + "%";
-				gradeCell += " (" + (this.db.toGrade(result) + ") ").substring(0, 3);
-				String testNamePadding = "";
-				for (;
-					testNamePadding.length() < this.db.getTestName(tId).length();
-					testNamePadding+= " "
-				);
+				String gradeCell = padString(result, 3, ' ', true) + "%";
+				gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
 				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
-				row += ANSI_CYAN + (gradeCell + testNamePadding).substring(0, testCellLength) + ANSI_RESET;
+				row += ANSI_CYAN + padString(gradeCell, testCellLength) + ANSI_RESET;
 			}
 			System.out.println(row);
 		}
@@ -169,6 +162,44 @@ public class TestInterfaceCli {
 		return id;
 	}
 	*/
+	
+	private String padString (String string, int length) {
+		char padChar = ' ';
+		boolean rightAlign = false;
+		return padString (string, length, padChar, rightAlign);
+	}
+	
+	private String padString (Integer intString, int length) {
+		char padChar = ' ';
+		boolean rightAlign = false;
+		String string = intString.toString();
+		return padString (string, length, padChar, rightAlign);
+	}
+	
+	private String padString (String string, int length, char padChar) {
+		boolean rightAlign = false;
+		return padString (string, length, padChar, rightAlign);
+	}
+	
+	private String padString (Integer intString, int length, char padChar) {
+		boolean rightAlign = false;
+		String string = intString.toString();
+		return padString (string, length, padChar, rightAlign);
+	}
+	private String padString (Integer intString, int length, char padChar, boolean rightAlign) {
+		String string = intString.toString();
+		return padString (string, length, padChar, rightAlign);
+	}
+	
+	private String padString (String string, int length, char padChar, boolean rightAlign) {
+		String paddingString = "";
+		for (int i = 0; i<length; i++) paddingString += padChar;
+		if (rightAlign == true) string = new StringBuilder(string).reverse().toString();
+		string += paddingString;
+		string = string.substring(0,length);
+		if (rightAlign == true) string = new StringBuilder(string).reverse().toString();
+		return string;
+	}
 	
 	public void runTest() {
 		// initialise a database for holding student & result data
