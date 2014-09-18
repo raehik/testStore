@@ -42,13 +42,13 @@ public class TestInterfaceCli {
 		System.out.print("Class/set: ");
 		String set = new Scanner(System.in).nextLine();
 		
-		System.out.print("Day set:");
+		System.out.print("Day set: ");
 		int day = new Scanner(System.in).nextInt();
 		
-		System.out.print("Month set:");
+		System.out.print("Month set: ");
 		int month = new Scanner(System.in).nextInt();
 		
-		System.out.print("Year set:");
+		System.out.print("Year set: ");
 		int year = new Scanner(System.in).nextInt();
 		
 		int id = this.db.addTest(name, set, day, month, year);
