@@ -106,7 +106,7 @@ public class TestInterfaceCli {
 		
 		// print header
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | ";
-		headerRow += ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
+		headerRow += ANSI_GREEN + padString("Student name", longestName - 1) + ANSI_RESET;
 		
 		for (Integer id: db.getAllTestIds()) {
 			headerRow += " | ";
