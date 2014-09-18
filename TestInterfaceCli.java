@@ -118,8 +118,7 @@ public class TestInterfaceCli {
 		}
 		System.out.println(headerRow);
 		
-		String headerBorder = "";
-		for (; headerBorder.length() < headerRow.length(); headerBorder+= "¯");
+		String headerBorder = headerRow.replaceAll("\u001B\\[\\d\\d?m", "").replaceAll(".", "-");
 		System.out.println(headerBorder);
 		
 		// print table contents
@@ -136,7 +135,8 @@ public class TestInterfaceCli {
 					testNamePadding.length() < this.db.getTestName(tId).length();
 					testNamePadding+= " "
 				);
-				row += ANSI_CYAN + (gradeCell + testNamePadding).substring(0, this.db.getTestName(tId).length()) + ANSI_RESET;
+				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
+				row += ANSI_CYAN + (gradeCell + testNamePadding).substring(0, testCellLength) + ANSI_RESET;
 			}
 			System.out.println(row);
 		}
