@@ -16,7 +16,51 @@ public class TestInterfaceCli {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 	
-	public void setResultsFor(int testId) {
+	public void newStudents(int num) {
+		// Add `num` students, prompting for names & printing their ID.
+		
+		for (int i = 0; i < num; i++) {
+			// prompt for name
+			System.out.print("Student " + (i + 1) + "/" + num + " name: ");
+			
+			// TODO: make sure they enter something
+			//       (check for `\n`s etc?)
+			String name = new Scanner(System.in).nextLine();
+			int id = this.db.addStudent(name);
+			
+			System.out.println(name + " added (ID " + id + ")");
+		}
+	}
+	
+	public int newTest() {
+		// Prompt for info to use to create a new test with, then do that.
+		
+		// get lotsa info
+		System.out.print("Test name: ");
+		String name = new Scanner(System.in).nextLine();
+		
+		System.out.print("Class/set: ");
+		String set = new Scanner(System.in).nextLine();
+		
+		System.out.print("Day set:");
+		int day = new Scanner(System.in).nextInt();
+		
+		System.out.print("Month set:");
+		int month = new Scanner(System.in).nextInt();
+		
+		System.out.print("Year set:");
+		int year = new Scanner(System.in).nextInt();
+		
+		int id = this.db.addTest(name, set, day, month, year);
+		
+		System.out.println(name + " added (ID " + id + ")");
+		
+		return id;
+	}
+	
+	public void setResultsForTest(int testId) {
+		// Set all students' results for test `testId`.
+		
 		int percent;
 		boolean inRange;
 		
@@ -24,18 +68,20 @@ public class TestInterfaceCli {
 		for (Integer id: this.db.getAllStudentIds()) {
 			do {
 				inRange = true;
+				
 				// prompt for percentage
-				System.out.println("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
+				System.out.print("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
 				try {
 					percent = new Scanner(System.in).nextInt();
 				} catch (InputMismatchException e) {
-					// if it wasn't an integer
+					// if it wasn't an integer, try again
 					System.out.println("ERROR: not an integer");
 					inRange = false;
 					continue;
 				}
 				
 				// try to set result with percent input
+				// setResultOfStudent does its own input checking
 				int ret = this.db.setResultOfStudent(id, testId, percent);
 				if (ret == 1) {
 					System.out.println("ERROR: not a percentage (0-100)");
@@ -46,26 +92,11 @@ public class TestInterfaceCli {
 		}
 	}
 	
-	public void bulkAddStudents(int num) {
-		// Add `num` students, prompting for names & printing their ID.
-		String name;
-		int id;
-		
-		for (int i = 0; i < num; i++) {
-			// prompt for name
-			System.out.println("Student " + (i + 1) + "/" + num + " name: ");
-			
-			// TODO: make sure they enter something
-			//       (check for `\n`s etc?)
-			name = new Scanner(System.in).nextLine();
-			id = this.db.addStudent(name);
-			
-			System.out.println(name + " added (ID " + id + ")");
-		}
-		name = null;
-	}
-	
 	public void printDatabase() {
+		// UGLY! we gotta refactor this big time!
+		
+		// Print the entire student-test-result database in a table format.
+		
 		int result;
 		
 		int longestName = 12;
@@ -111,6 +142,7 @@ public class TestInterfaceCli {
 		}
 	}
 	
+	/*
 	public void printTestResult(int studentID, int testID) {
 		String name = this.db.getStudentName(studentID);
 		String test = this.db.getTestName(testID);
@@ -118,6 +150,7 @@ public class TestInterfaceCli {
 		String grade = this.db.toGrade(result);
 		System.out.println(name + " scored " + result + "% (" + grade + ") on test \"" + test + "\"");
 	}
+	*/
 	
 	/*
 	public int setTest(String testName) {
@@ -141,9 +174,9 @@ public class TestInterfaceCli {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
 		
-		this.bulkAddStudents(5);
-		int test1 = this.db.addTest("Computer Science 1", "true", 2, 2, 2014);
-		this.setResultsFor(test1);
+		this.newStudents(5);
+		int test1 = this.newTest();
+		this.setResultsForTest(test1);
 		this.printDatabase();
 	}
 	
