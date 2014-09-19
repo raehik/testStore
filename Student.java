@@ -31,9 +31,13 @@ public class Student {
 		}
 	}
 	
-	public void setResult(int testId, int percent) {
+	public void setResultOf(int testId, int percent) {
 		// TODO: maybe 2 separate methods for this: newResult and
 		//       changeResult?
 		this.results.put(testId, percent);
+	}
+	
+	public void removeResultOf(int testId) {
+		this.results.remove(testId);
 	}
 }
