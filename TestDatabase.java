@@ -30,15 +30,13 @@ public class TestDatabase {
 		return this.students.get(studentId).getResultOf(testId);
 	}
 	
-	public int setResultOfStudent(int studentId, int testId, int percent) {
-		/* Set Student `studentId`'s result for Test `testId` to `percent`.
-		Returns 1 if percent is not that.
-		*/
-		if (percent >= 0 & percent <= 100) {
+	public void setResultOfStudent(int studentId, int testId, int percent)
+		throws IndexOutOfBoundsException {
+		// Set Student `studentId`'s result for Test `testId` to `percent`, if between -1 and 100
+		if (percent >= -1 & percent <= 100) {
 			this.students.get(studentId).setResult(testId, percent);
-			return 0;
 		} else {
-			return 1;
+			throw new IndexOutOfBoundsException("Percentage out of bounds");
 		}
 	}
 	

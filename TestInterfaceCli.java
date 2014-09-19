@@ -82,8 +82,9 @@ public class TestInterfaceCli {
 				
 				// try to set result with percent input
 				// setResultOfStudent does its own input checking
-				int ret = this.db.setResultOfStudent(id, testId, percent);
-				if (ret == 1) {
+				try {
+					this.db.setResultOfStudent(id, testId, percent);
+				} catch (IndexOutOfBoundsException e) {
 					System.out.println("ERROR: not a percentage (0-100)");
 					inRange = false;
 					continue;
