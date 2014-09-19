@@ -8,7 +8,7 @@ public class TestDatabase {
 	//		test ID, name
 	public HashMap<Integer, Test> tests;
 	
-	public int nextStudentId, nextTestId;
+	private int nextStudentId, nextTestId;
 	
 	public TestDatabase() {
 		this.students = new HashMap<Integer, Student>();
