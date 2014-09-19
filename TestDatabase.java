@@ -35,11 +35,15 @@ public class TestDatabase {
 		Returns 1 if percent is not that.
 		*/
 		if (percent >= 0 & percent <= 100) {
-			this.students.get(studentId).setResult(testId, percent);
+			this.students.get(studentId).setResultOf(testId, percent);
 			return 0;
 		} else {
 			return 1;
 		}
+	}
+	
+	public void removeResultOfStudent(int studentId, int testId) {
+		this.students.get(studentId).removeResultOf(testId);
 	}
 	
 	public Integer[] getAllStudentIds() {
@@ -67,6 +71,10 @@ public class TestDatabase {
 	
 	public Integer[] getAllTestIds() {
 		return this.tests.keySet().toArray(new Integer[this.tests.size()]);
+	}
+	
+	public void removeTest(int testId) {
+		this.tests.remove(testId);
 	}
 	
 	public String toGrade(int percent) {
