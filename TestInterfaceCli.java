@@ -126,10 +126,11 @@ public class TestInterfaceCli {
 		}
 	}
 	
+	public void removeStudent(int studentId) {
+		this.db.removeStudent(studentId);
+	}
+	
 	public void removeTest(int testId) {
-		for (Integer id: this.db.getAllStudentIds()) {
-			this.db.removeResultOfStudent(id, testId);
-		}
 		this.db.removeTest(testId);
 	}
 	
@@ -161,10 +162,15 @@ public class TestInterfaceCli {
 			String row = ANSI_RED + String.format("%010d", id) + ANSI_RESET + " | ";
 			row += ANSI_GREEN + padString(this.db.getStudentName(id), longestName) + ANSI_RESET;
 			for (Integer tId: db.getAllTestIds()) {
-				int result = this.db.getResultOfStudent(id, tId);
 				row += " | ";
-				String gradeCell = padString(result, 3, ' ', true) + "%";
-				gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
+				String gradeCell;
+				int result = this.db.getResultOfStudent(id, tId);
+				if (result == -1) {
+					gradeCell = padString(" N/A", 4);
+				} else {
+					gradeCell = padString(result, 3, ' ', true) + "%";
+					gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
+				}
 				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
 				row += ANSI_CYAN + padString(gradeCell, testCellLength) + ANSI_RESET;
 			}
@@ -242,11 +248,13 @@ public class TestInterfaceCli {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
 
-		this.newStudents(5);
+		this.newStudents(2);
 		int test1 = this.newTest();
 		this.setResultsForTest(test1);
 		this.printDatabase();
 		
+		this.removeStudent(1);
+		this.newStudents(1);
 		int test2 = this.newTest();
 		this.setResultsForTest(test2);
 		this.printDatabase();
