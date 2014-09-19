@@ -94,24 +94,20 @@ public class TestInterfaceCli {
 	}
 	
 	public void printDatabase() {
-		// UGLY! we gotta refactor this big time!
-		
+		// TODO: we gotta refactor this big time!
 		// Print the entire student-test-result database in a table format.
 		
-		int result;
-		
 		int longestName = 12;
-		for (Integer id: this.db.getAllStudentIds()) {
+		for (Integer id: this.db.getAllStudentIds())
 			longestName = Math.max(longestName, this.db.getStudentName(id).length());
-		}
 		
 		// print header
-		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | ";
-		headerRow += ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
+		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | "
+			+ ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
 		
-		for (Integer id: db.getAllTestIds()) {
+		for (Integer tId: db.getAllTestIds()) {
 			headerRow += " | ";
-			String testName = this.db.getTestName(id);
+			String testName = this.db.getTestName(tId);
 			int headerLength = Math.max(9, testName.length());
 			headerRow += ANSI_CYAN + padString(testName, headerLength) + ANSI_RESET;
 		}
@@ -125,7 +121,7 @@ public class TestInterfaceCli {
 			String row = ANSI_RED + String.format("%010d", id) + ANSI_RESET + " | ";
 			row += ANSI_GREEN + padString(this.db.getStudentName(id), longestName) + ANSI_RESET;
 			for (Integer tId: db.getAllTestIds()) {
-				result = this.db.getResultOfStudent(id, tId);
+				int result = this.db.getResultOfStudent(id, tId);
 				row += " | ";
 				String gradeCell = padString(result, 3, ' ', true) + "%";
 				gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
