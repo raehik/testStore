@@ -16,16 +16,66 @@ public class TestInterfaceCli {
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 	
+	private String getLine(String prompt) {
+		// TODO: make sure they enter something
+		//       (check for `\n`s etc?)
+		System.out.print(prompt);
+		return new Scanner(System.in).nextLine();
+	}
+	
+	private int getPositiveInt() {
+		// Try to get a positive integer from stdin.
+		//
+		// If an integer is not entered, return -2.
+		// If it is not positive, return -1.
+		//
+		
+		int num;
+		
+		try {
+			num = new Scanner(System.in).nextInt();
+		} catch (InputMismatchException e) {
+			return -2;
+		}
+		
+		if (num < 0) { return -1; } else { return num; }
+	}
+	
+	private int promptPositiveInt(String prompt) {
+		// Force a positive integer to be entered.
+		//
+		// Prompts using string `prompt`.
+		// (keeps prompting until we get valid input)
+		//
+		
+		boolean badInput;
+		int num;
+		
+		do {
+			badInput = false;
+			
+			System.out.print(prompt);
+			num = this.getPositiveInt();
+			
+			if (num == -2) {
+				System.out.println("ERROR: not an integer");
+				badInput = true;
+			} else if (num == -1) {
+				System.out.println("ERROR: not a positive integer");
+				badInput = true;
+			}
+		} while (badInput);
+		
+		return num;
+	}
+	
 	public void newStudents(int num) {
 		// Add `num` students, prompting for names & printing their ID.
 		
 		for (int i = 0; i < num; i++) {
 			// prompt for name
-			System.out.print("Student " + (i + 1) + "/" + num + " name: ");
+			String name = this.getLine("Student " + (i + 1) + "/" + num + " name: ");
 			
-			// TODO: make sure they enter something
-			//       (check for `\n`s etc?)
-			String name = new Scanner(System.in).nextLine();
 			int id = this.db.addStudent(name);
 			
 			System.out.println(name + " added (ID " + id + ")");
@@ -36,20 +86,12 @@ public class TestInterfaceCli {
 		// Prompt for info to use to create a new test with, then do that.
 		
 		// get lotsa info
-		System.out.print("Test name: ");
-		String name = new Scanner(System.in).nextLine();
-		
-		System.out.print("Class/set: ");
-		String set = new Scanner(System.in).nextLine();
-		
-		System.out.print("Day set: ");
-		int day = new Scanner(System.in).nextInt();
-		
-		System.out.print("Month set: ");
-		int month = new Scanner(System.in).nextInt();
-		
-		System.out.print("Year set: ");
-		int year = new Scanner(System.in).nextInt();
+		String name = this.getLine("Test name: ");
+		String set = this.getLine("Class/set: ");
+
+		int day = this.promptPositiveInt("Day set: ");
+		int month = this.promptPositiveInt("Month set: ");
+		int year = this.promptPositiveInt("Year set: ");
 		
 		int id = this.db.addTest(name, set, day, month, year);
 		
@@ -62,34 +104,32 @@ public class TestInterfaceCli {
 		// Set all students' results for test `testId`.
 		
 		int percent;
-		boolean inRange;
+		boolean badInput;
 		
 		// iterate over all existing students
 		for (Integer id: this.db.getAllStudentIds()) {
 			do {
-				inRange = true;
+				badInput = false;
 				
 				// prompt for percentage
-				System.out.print("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
-				try {
-					percent = new Scanner(System.in).nextInt();
-				} catch (InputMismatchException e) {
-					// if it wasn't an integer, try again
-					System.out.println("ERROR: not an integer");
-					inRange = false;
-					continue;
-				}
+				percent = this.promptPositiveInt("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
 				
-				// try to set result with percent input
-				// setResultOfStudent does its own input checking
+				// setResultOfStudent checks for percentage
 				int ret = this.db.setResultOfStudent(id, testId, percent);
 				if (ret == 1) {
 					System.out.println("ERROR: not a percentage (0-100)");
-					inRange = false;
+					badInput = true;
 					continue;
 				}
-			} while (! inRange); // keep trying if we had an error
+			} while (badInput); // keep trying if we had an error
 		}
+	}
+	
+	public void removeTest(int testId) {
+		for (Integer id: this.db.getAllStudentIds()) {
+			this.db.removeResultOfStudent(id, testId);
+		}
+		this.db.removeTest(testId);
 	}
 	
 	public void printDatabase() {
@@ -106,7 +146,7 @@ public class TestInterfaceCli {
 		
 		// print header
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | ";
-		headerRow += ANSI_GREEN + padString("Student name", longestName - 1) + ANSI_RESET;
+		headerRow += ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
 		
 		for (Integer id: db.getAllTestIds()) {
 			headerRow += " | ";
@@ -204,10 +244,17 @@ public class TestInterfaceCli {
 	public void runTest() {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
-		
+
 		this.newStudents(5);
 		int test1 = this.newTest();
 		this.setResultsForTest(test1);
+		this.printDatabase();
+		
+		int test2 = this.newTest();
+		this.setResultsForTest(test2);
+		this.printDatabase();
+		
+		this.removeTest(test1);
 		this.printDatabase();
 	}
 	
