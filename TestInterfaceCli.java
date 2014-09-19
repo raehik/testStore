@@ -19,8 +19,22 @@ public class TestInterfaceCli {
 	private String getLine(String prompt) {
 		// TODO: make sure they enter something
 		//       (check for `\n`s etc?)
-		System.out.print(prompt);
-		return new Scanner(System.in).nextLine();
+		boolean badInput = false;
+		String line;
+		
+		do {
+			badInput = false;
+			
+			System.out.print(prompt);
+			line = new Scanner(System.in).nextLine().toLowerCase();
+			
+			if (line.isEmpty()) {
+				System.out.println("ERROR: nothing entered");
+				badInput = true;
+			}
+		} while (badInput);
+		
+		return line;
 	}
 	
 	private int getPositiveInt() {
