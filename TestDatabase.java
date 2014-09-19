@@ -48,6 +48,10 @@ public class TestDatabase {
 		return this.students.keySet().toArray(new Integer[this.students.size()]);
 	}
 	
+	public void removeStudent(int studentId) {
+		this.students.remove(studentId);
+	}
+	
 	public int addTest(String name, String set, int day, int month, int year) {
 		int id = this.nextTestId;
 		this.tests.put(id, new Test(name, set, day, month, year));
@@ -72,6 +76,10 @@ public class TestDatabase {
 	}
 	
 	public void removeTest(int testId) {
+		// Removes test testId and all associated students' results.
+		for (Integer id: this.getAllStudentIds()) {
+			this.removeResultOfStudent(id, testId);
+		}
 		this.tests.remove(testId);
 	}
 	
