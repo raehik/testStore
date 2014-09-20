@@ -8,7 +8,7 @@ public class TestDatabase {
 	//		test ID, name
 	public HashMap<Integer, Test> tests;
 	
-	public int nextStudentId, nextTestId;
+	private int nextStudentId, nextTestId;
 	
 	public TestDatabase() {
 		this.students = new HashMap<Integer, Student>();
@@ -48,6 +48,10 @@ public class TestDatabase {
 		return this.students.keySet().toArray(new Integer[this.students.size()]);
 	}
 	
+	public void removeStudent(int studentId) {
+		this.students.remove(studentId);
+	}
+	
 	public int addTest(String name, String set, int day, int month, int year) {
 		int id = this.nextTestId;
 		this.tests.put(id, new Test(name, set, day, month, year));
@@ -72,6 +76,10 @@ public class TestDatabase {
 	}
 	
 	public void removeTest(int testId) {
+		// Removes test testId and all associated students' results.
+		for (Integer id: this.getAllStudentIds()) {
+			this.removeStudentTestResult(id, testId);
+		}
 		this.tests.remove(testId);
 	}
 	

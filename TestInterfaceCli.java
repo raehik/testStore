@@ -19,8 +19,22 @@ public class TestInterfaceCli {
 	private String getLine(String prompt) {
 		// TODO: make sure they enter something
 		//       (check for `\n`s etc?)
-		System.out.print(prompt);
-		return new Scanner(System.in).nextLine();
+		boolean badInput = false;
+		String line;
+		
+		do {
+			badInput = false;
+			
+			System.out.print(prompt);
+			line = new Scanner(System.in).nextLine().toLowerCase();
+			
+			if (line.isEmpty()) {
+				System.out.println("ERROR: nothing entered");
+				badInput = true;
+			}
+		} while (badInput);
+		
+		return line;
 	}
 	
 	private int getPositiveInt() {
@@ -126,6 +140,10 @@ public class TestInterfaceCli {
 		}
 	}
 	
+	public void removeStudent(int studentId) {
+		this.db.removeStudent(studentId);
+	}
+	
 	public void removeTest(int testId) {
 		for (Integer id: this.db.getAllStudentIds()) {
 			this.db.removeStudentTestResult(id, testId);
@@ -163,8 +181,13 @@ public class TestInterfaceCli {
 			for (Integer tId: db.getAllTestIds()) {
 				int result = this.db.getStudentTestResult(id, tId);
 				row += " | ";
-				String gradeCell = padString(result, 3, ' ', true) + "%";
-				gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
+				String gradeCell;
+				if (result == -1) {
+					gradeCell = padString(" N/A", 4);
+				} else {
+					gradeCell = padString(result, 3, ' ', true) + "%";
+					gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
+				}
 				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
 				row += ANSI_CYAN + padString(gradeCell, testCellLength) + ANSI_RESET;
 			}
@@ -242,11 +265,13 @@ public class TestInterfaceCli {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
 
-		this.newStudents(5);
+		this.newStudents(2);
 		int test1 = this.newTest();
 		this.setResultsForTest(test1);
 		this.printDatabase();
 		
+		this.removeStudent(1);
+		this.newStudents(1);
 		int test2 = this.newTest();
 		this.setResultsForTest(test2);
 		this.printDatabase();
