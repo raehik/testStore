@@ -114,7 +114,7 @@ public class TestInterfaceCli {
 		return id;
 	}
 	
-	public void setResultsForTest(int testId) {
+	public void setTestResults(int testId) {
 		// Set all students' results for test `testId`.
 		
 		int percent;
@@ -267,13 +267,13 @@ public class TestInterfaceCli {
 
 		this.newStudents(2);
 		int test1 = this.newTest();
-		this.setResultsForTest(test1);
+		this.setTestResults(test1);
 		this.printDatabase();
 		
 		this.removeStudent(1);
 		this.newStudents(1);
 		int test2 = this.newTest();
-		this.setResultsForTest(test2);
+		this.setTestResults(test2);
 		this.printDatabase();
 		
 		this.removeTest(test1);
