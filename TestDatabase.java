@@ -26,22 +26,22 @@ public class TestDatabase {
 		return this.students.get(id).getName();
 	}
 	
-	public int getResultOfStudent(int studentId, int testId) {
-		return this.students.get(studentId).getResultOf(testId);
+	public int getStudentTestResult(int studentId, int testId) {
+		return this.students.get(studentId).getTestResult(testId);
 	}
 	
-	public void setResultOfStudent(int studentId, int testId, int percent)
+	public void setStudentTestResult(int studentId, int testId, int percent)
 		throws IndexOutOfBoundsException {
 		// Set Student `studentId`'s result for Test `testId` to `percent`, if between -1 and 100
 		if (percent >= 0 && percent <= 100) {
-			this.students.get(studentId).setResultOf(testId, percent);
+			this.students.get(studentId).setTestResult(testId, percent);
 		} else {
 			throw new IndexOutOfBoundsException("Percentage out of bounds");
 		}
 	}
 	
-	public void removeResultOfStudent(int studentId, int testId) {
-		this.students.get(studentId).removeResultOf(testId);
+	public void removeStudentTestResult(int studentId, int testId) {
+		this.students.get(studentId).removeTestResult(testId);
 	}
 	
 	public Integer[] getAllStudentIds() {

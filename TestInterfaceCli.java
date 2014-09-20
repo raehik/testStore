@@ -114,9 +114,9 @@ public class TestInterfaceCli {
 				// prompt for percentage
 				percent = this.promptPositiveInt("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
 				
-				// setResultOfStudent checks for percentage
+				// setStudentTestResult checks for percentage
 				try {
-					this.db.setResultOfStudent(id, testId, percent);
+					this.db.setStudentTestResult(id, testId, percent);
 				} catch (IndexOutOfBoundsException e) {
 					System.out.println("ERROR: not a percentage (0-100)");
 					badInput = true;
@@ -128,7 +128,7 @@ public class TestInterfaceCli {
 	
 	public void removeTest(int testId) {
 		for (Integer id: this.db.getAllStudentIds()) {
-			this.db.removeResultOfStudent(id, testId);
+			this.db.removeStudentTestResult(id, testId);
 		}
 		this.db.removeTest(testId);
 	}
@@ -161,7 +161,7 @@ public class TestInterfaceCli {
 			String row = ANSI_RED + String.format("%010d", id) + ANSI_RESET + " | ";
 			row += ANSI_GREEN + padString(this.db.getStudentName(id), longestName) + ANSI_RESET;
 			for (Integer tId: db.getAllTestIds()) {
-				int result = this.db.getResultOfStudent(id, tId);
+				int result = this.db.getStudentTestResult(id, tId);
 				row += " | ";
 				String gradeCell = padString(result, 3, ' ', true) + "%";
 				gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);

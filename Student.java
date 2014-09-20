@@ -22,7 +22,7 @@ public class Student {
 		return this.name;
 	}
 	
-	public int getResultOf(int testId) {
+	public int getTestResult(int testId) {
 		try {
 			return this.results.get(testId);
 		} catch (NullPointerException e) {
@@ -31,13 +31,13 @@ public class Student {
 		}
 	}
 	
-	public void setResultOf(int testId, int percent) {
+	public void setTestResult(int testId, int percent) {
 		// TODO: maybe 2 separate methods for this: newResult and
 		//       changeResult?
 		this.results.put(testId, percent);
 	}
 	
-	public void removeResultOf(int testId) {
+	public void removeTestResult(int testId) {
 		this.results.remove(testId);
 	}
 }
