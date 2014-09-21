@@ -76,27 +76,30 @@ public class TestDatabase {
 		return this.tests.keySet().toArray(new Integer[this.tests.size()]);
 	}
 
-	public List<Integer> getTestIdsInRange(String date1, String date2) throws ParseException {
+	public Integer[] getTestIdsInRange(String date1, String date2) throws ParseException {
 		List<Integer> validTests = new ArrayList<Integer>();
 		
 		// TODO: if actualDate2 < actualDate 1, be smart: swap the check
-		Date actualDate1 = null;
-		Date actualDate2 = null;
+		Date fromDate = null;
+		Date toDate = null;
 		
 		SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yy");
 		
-		actualDate1 = simpleDate.parse(date1);
-		actualDate2 = simpleDate.parse(date2);
+		if (simpleDate.parse(date1).after(simpleDate.parse(date2))) {
+			fromDate = simpleDate.parse(date2);
+			toDate = simpleDate.parse(date1);
+		} else {
+			fromDate = simpleDate.parse(date1);
+			toDate = simpleDate.parse(date2);
+		}
 		
-		int i = 0;
 		for (Integer id : this.getAllTestIds()) {
-			if (this.tests.get(id).date.compareTo(actualDate1) >= 0 && this.tests.get(id).date.compareTo(actualDate2) <= 0) {
+			if (this.tests.get(id).date().compareTo(fromDate) >= 0 && this.tests.get(id).date().compareTo(toDate) <= 0) {
 				validTests.add(id);
-				i++;
 			}
 		}
-
-		return validTests;
+		
+		return validTests.toArray(new Integer[validTests.size()]);
 	}
 
 	public void removeTest(int testId) {
@@ -118,25 +121,24 @@ public class TestDatabase {
 		else if (percent == -1) { return "-"; }
 		else { return "U"; } // below 40%
 	}
-
-	// TODO: these should return an *array* of IDs matching the name.
-	/*
-	public int IdOfStudent(String name) {
-		for (int i = 0; i < this.students.size(); i++) {
-			if (name == this.students.get(i).getName()) {
-				return i;
+	
+	public Integer[] studentId(String name) {
+		List<Integer> matchingIds = new ArrayList<Integer>();
+		for (Integer id : this.getAllStudentIds()) {
+			if (name.equals(this.students.get(id).getName())) {
+				matchingIds.add(id);
 			}
 		}
-		return -1;
+		return matchingIds.toArray(new Integer[matchingIds.size()]);
 	}
-
-	public int IdOfTest(String name) {
-		for (int i = 0; i < this.tests.size(); i++) {
-			if (name.equals(this.tests.get(i))) {
-				return i;
+	
+	public Integer[] testId(String name) {
+		List<Integer> matchingIds = new ArrayList<Integer>();
+		for (Integer id : this.getAllTestIds()) {
+			if (name.equals(this.tests.get(id).getName())) {
+				matchingIds.add(id);
 			}
 		}
-		return -1;
+		return matchingIds.toArray(new Integer[matchingIds.size()]);
 	}
-	*/
 }

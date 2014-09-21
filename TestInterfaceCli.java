@@ -222,7 +222,7 @@ public class TestInterfaceCli {
 		return this.db.getAllTestIds();
 	}
 	
-	private List<Integer> getTestIdsInRange(String date1, String date2) {
+	private Integer[] getTestIdsInRange(String date1, String date2) {
 		try {
 			return this.db.getTestIdsInRange(date1, date2);
 		} catch (ParseException e) { return null; }
@@ -255,28 +255,7 @@ public class TestInterfaceCli {
 		this.db.setStudentResult(s4, t3, 83);
 		
 		this.printDatabase(this.db.getAllStudentIds(), this.getAllTestIds());
-		List<Integer> testsInRange1 = this.getTestIdsInRange("16/09/14", "22/09/14");
-		Integer[] testsInRange = testsInRange1.toArray(new Integer[testsInRange1.size()]);
-		this.printDatabase(new Integer[] {0, 1}, testsInRange);
-		
-		/*
-		int t4 = this.addTest("Computer Science 1", "Yr. 12 CS", "21/09/14");
-		int t5 = this.addTest("Computer Science 1", "Yr. 12 CS", "29/10/14");
-		
-		int s5 = this.addStudent("Dan");
-		
-		int test1 = this.newTest();
-		this.printDatabase(this.getAllStudentIds(), this.getTestIdsInRange("20/09/14", "22/09/14"));
-		
-		this.removeStudent(1);
-		this.newStudents(1);
-		int test2 = this.newTest();
-		this.setTestResults(test2);
-		this.printDatabase(this.getAllStudentIds(), this.getAllTestIds());
-		
-		this.removeTest(test1);
-		this.printDatabase(this.getAllStudentIds(), this.getAllTestIds());
-		*/
+		this.printDatabase(new Integer[] {0, 1}, this.getTestIdsInRange("16/09/14", "22/09/14"));
 	}
 	
 	public static void main(String[] args) {
