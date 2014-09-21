@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 
 public class Test {
 	private String name, set;
-	public Date date;
+	private Date date;
 	
 	public Test(String name, String set, String date) {
 		// remove trailing whitespace from name!
@@ -27,5 +27,9 @@ public class Test {
 	
 	public String getSet() {
 		return this.set;
+	}
+	
+	public Date date() {
+		return this.date;
 	}
 }
