@@ -79,7 +79,6 @@ public class TestDatabase {
 	public Integer[] getTestIdsInRange(String date1, String date2) throws ParseException {
 		List<Integer> validTests = new ArrayList<Integer>();
 		
-		// TODO: if actualDate2 < actualDate 1, be smart: swap the check
 		Date fromDate = null;
 		Date toDate = null;
 		
