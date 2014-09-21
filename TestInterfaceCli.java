@@ -83,10 +83,6 @@ public class TestInterfaceCli {
 		return num;
 	}
 	
-	public int addStudent(String name) {
-		return this.db.addStudent(name);
-	}
-	
 	public void newStudents(int num) {
 		// Add `num` students, prompting for names & printing their ID.
 		
@@ -94,14 +90,10 @@ public class TestInterfaceCli {
 			// prompt for name
 			String name = this.getLine("Student " + (i + 1) + "/" + num + " name: ");
 			
-			int id = this.addStudent(name);
+			int id = this.db.addStudent(name);
 			
 			System.out.println(name + " added (ID " + id + ")");
 		}
-	}
-	
-	public int addTest(String name, String set, String date) {
-		return this.db.addTest(name, set, date);
 	}
 	
 	public int newTest() {
@@ -112,29 +104,21 @@ public class TestInterfaceCli {
 		String set = this.getLine("Class/set: ");
         String date = this.getLine("Date: ");
 
-		int id = this.addTest(name, set, date);
+		int id = this.db.addTest(name, set, date);
 		
 		System.out.println(name + " added (ID " + id + ")");
 		
 		return id;
 	}
 	
-	private Integer[] getAllStudentIds() {
-		return this.db.getAllStudentIds();
-	}
-	
-	public void setStudentResult(int studentId, int testId, int percent) {
-		this.db.setStudentResult(studentId, testId, percent);
-	}
-	
-	public void setTestResults(int testId) {
+	public void setResults(int testId) {
 		// Set all students' results for test `testId`.
 		
 		int percent;
 		boolean badInput;
 		
 		// iterate over all existing students
-		for (Integer id: this.getAllStudentIds()) {
+		for (Integer id: this.db.getAllStudentIds()) {
 			do {
 				badInput = false;
 				
@@ -151,14 +135,6 @@ public class TestInterfaceCli {
 				}
 			} while (badInput); // keep trying if we had an error
 		}
-	}
-	
-	public void removeStudent(int studentId) {
-		this.db.removeStudent(studentId);
-	}
-	
-	public void removeTest(int testId) {
-		this.db.removeTest(testId);
 	}
 	
 	public void printDatabase(Integer[] studentIds, Integer[] testIds) {
@@ -256,29 +232,29 @@ public class TestInterfaceCli {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
 
-		int s1 = this.addStudent("Ben");
-		int s2 = this.addStudent("Sharlo");
-		int s3 = this.addStudent("Raehik");
-		int s4 = this.addStudent("Charlie");
+		int s1 = this.db.addStudent("Ben");
+		int s2 = this.db.addStudent("Sharlo");
+		int s3 = this.db.addStudent("Raehik");
+		int s4 = this.db.addStudent("Charlie");
 
-		int t1 = this.addTest("Computer Science 1", "Yr. 12 CS", "17/09/13");
-		int t2 = this.addTest("Computer Science 2", "Yr. 12 CS", "17/09/15");
-		int t3 = this.addTest("Computer Science 3", "Yr. 12 CS", "17/09/14");
+		int t1 = this.db.addTest("Computer Science 1", "Yr. 12 CS", "17/09/13");
+		int t2 = this.db.addTest("Computer Science 2", "Yr. 12 CS", "17/09/15");
+		int t3 = this.db.addTest("Computer Science 3", "Yr. 12 CS", "17/09/14");
 
-		this.setStudentResult(s1, t1, 100);
-		this.setStudentResult(s1, t2, 90);
-		this.setStudentResult(s1, t3, 80);
-		this.setStudentResult(s2, t1, 70);
-		this.setStudentResult(s2, t2, 60);
-		this.setStudentResult(s2, t3, 50);
-		this.setStudentResult(s3, t1, 40);
-		this.setStudentResult(s3, t2, 30);
-		this.setStudentResult(s3, t3, 20);
-		this.setStudentResult(s4, t1, 10);
-		this.setStudentResult(s4, t2, 75);
-		this.setStudentResult(s4, t3, 83);
+		this.db.setStudentResult(s1, t1, 100);
+		this.db.setStudentResult(s1, t2, 90);
+		this.db.setStudentResult(s1, t3, 80);
+		this.db.setStudentResult(s2, t1, 70);
+		this.db.setStudentResult(s2, t2, 60);
+		this.db.setStudentResult(s2, t3, 50);
+		this.db.setStudentResult(s3, t1, 40);
+		this.db.setStudentResult(s3, t2, 30);
+		this.db.setStudentResult(s3, t3, 20);
+		this.db.setStudentResult(s4, t1, 10);
+		this.db.setStudentResult(s4, t2, 75);
+		this.db.setStudentResult(s4, t3, 83);
 		
-		this.printDatabase(this.getAllStudentIds(), this.getAllTestIds());
+		this.printDatabase(this.db.getAllStudentIds(), this.getAllTestIds());
 		List<Integer> testsInRange1 = this.getTestIdsInRange("16/09/14", "22/09/14");
 		Integer[] testsInRange = testsInRange1.toArray(new Integer[testsInRange1.size()]);
 		this.printDatabase(new Integer[] {0, 1}, testsInRange);
