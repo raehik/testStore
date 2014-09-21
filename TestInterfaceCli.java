@@ -1,10 +1,12 @@
 package testStore;
 
+import java.text.ParseException;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class TestInterfaceCli {
-	public TestDatabase db;
+	private TestDatabase db;
 	
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_BLACK = "\u001B[30m";
@@ -17,8 +19,6 @@ public class TestInterfaceCli {
 	public static final String ANSI_WHITE = "\u001B[37m";
 	
 	private String getLine(String prompt) {
-		// TODO: make sure they enter something
-		//       (check for `\n`s etc?)
 		boolean badInput = false;
 		String line;
 		
@@ -26,7 +26,7 @@ public class TestInterfaceCli {
 			badInput = false;
 			
 			System.out.print(prompt);
-			line = new Scanner(System.in).nextLine().toLowerCase();
+			line = new Scanner(System.in).nextLine();
 			
 			if (line.isEmpty()) {
 				System.out.println("ERROR: nothing entered");
@@ -83,6 +83,10 @@ public class TestInterfaceCli {
 		return num;
 	}
 	
+	public int addStudent(String name) {
+		return this.db.addStudent(name);
+	}
+	
 	public void newStudents(int num) {
 		// Add `num` students, prompting for names & printing their ID.
 		
@@ -90,10 +94,14 @@ public class TestInterfaceCli {
 			// prompt for name
 			String name = this.getLine("Student " + (i + 1) + "/" + num + " name: ");
 			
-			int id = this.db.addStudent(name);
+			int id = this.addStudent(name);
 			
 			System.out.println(name + " added (ID " + id + ")");
 		}
+	}
+	
+	public int addTest(String name, String set, String date) {
+		return this.db.addTest(name, set, date);
 	}
 	
 	public int newTest() {
@@ -102,16 +110,21 @@ public class TestInterfaceCli {
 		// get lotsa info
 		String name = this.getLine("Test name: ");
 		String set = this.getLine("Class/set: ");
+        String date = this.getLine("Date: ");
 
-		int day = this.promptPositiveInt("Day set: ");
-		int month = this.promptPositiveInt("Month set: ");
-		int year = this.promptPositiveInt("Year set: ");
-		
-		int id = this.db.addTest(name, set, day, month, year);
+		int id = this.addTest(name, set, date);
 		
 		System.out.println(name + " added (ID " + id + ")");
 		
 		return id;
+	}
+	
+	private Integer[] getAllStudentIds() {
+		return this.db.getAllStudentIds();
+	}
+	
+	public void setStudentResult(int studentId, int testId, int percent) {
+		this.db.setStudentResult(studentId, testId, percent);
 	}
 	
 	public void setTestResults(int testId) {
@@ -121,7 +134,7 @@ public class TestInterfaceCli {
 		boolean badInput;
 		
 		// iterate over all existing students
-		for (Integer id: this.db.getAllStudentIds()) {
+		for (Integer id: this.getAllStudentIds()) {
 			do {
 				badInput = false;
 				
@@ -130,7 +143,7 @@ public class TestInterfaceCli {
 				
 				// setStudentTestResult checks for percentage
 				try {
-					this.db.setStudentTestResult(id, testId, percent);
+					this.db.setStudentResult(id, testId, percent);
 				} catch (IndexOutOfBoundsException e) {
 					System.out.println("ERROR: not a percentage (0-100)");
 					badInput = true;
@@ -145,27 +158,23 @@ public class TestInterfaceCli {
 	}
 	
 	public void removeTest(int testId) {
-		for (Integer id: this.db.getAllStudentIds()) {
-			this.db.removeStudentTestResult(id, testId);
-		}
 		this.db.removeTest(testId);
 	}
 	
-	public void printDatabase() {
-		// TODO: we gotta refactor this big time!
+	public void printDatabase(Integer[] studentIds, Integer[] testIds) {
 		// Print the entire student-test-result database in a table format.
 		
 		int longestName = 12;
-		for (Integer id: this.db.getAllStudentIds())
+		for (Integer id : studentIds)
 			longestName = Math.max(longestName, this.db.getStudentName(id).length());
 		
 		// print header
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | "
 			+ ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
 		
-		for (Integer tId: db.getAllTestIds()) {
+		for (Integer testId : testIds) {
 			headerRow += " | ";
-			String testName = this.db.getTestName(tId);
+			String testName = this.db.getTestName(testId);
 			int headerLength = Math.max(9, testName.length());
 			headerRow += ANSI_CYAN + padString(testName, headerLength) + ANSI_RESET;
 		}
@@ -175,11 +184,11 @@ public class TestInterfaceCli {
 		System.out.println(headerBorder);
 		
 		// print table contents
-		for (Integer id: this.db.getAllStudentIds()) {
+		for (Integer id : studentIds) {
 			String row = ANSI_RED + String.format("%010d", id) + ANSI_RESET + " | ";
 			row += ANSI_GREEN + padString(this.db.getStudentName(id), longestName) + ANSI_RESET;
-			for (Integer tId: db.getAllTestIds()) {
-				int result = this.db.getStudentTestResult(id, tId);
+			for (Integer testId: testIds) {
+				int result = this.db.getStudentResult(id, testId);
 				row += " | ";
 				String gradeCell;
 				if (result == -1) {
@@ -188,40 +197,12 @@ public class TestInterfaceCli {
 					gradeCell = padString(result, 3, ' ', true) + "%";
 					gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
 				}
-				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
+				int testCellLength = Math.max(this.db.getTestName(testId).length(), 9);
 				row += ANSI_CYAN + padString(gradeCell, testCellLength) + ANSI_RESET;
 			}
 			System.out.println(row);
 		}
 	}
-	
-	/*
-	public void printTestResult(int studentID, int testID) {
-		String name = this.db.getStudentName(studentID);
-		String test = this.db.getTestName(testID);
-		int result = this.db.getResultOfStudent(studentID, testID);
-		String grade = this.db.toGrade(result);
-		System.out.println(name + " scored " + result + "% (" + grade + ") on test \"" + test + "\"");
-	}
-	*/
-	
-	/*
-	public int setTest(String testName) {
-		String test;
-		int id = -1;
-		for (int i = 0; i < this.db.numOfStudents; i++) {
-			// prompt for name
-			System.out.println("Test name: ");
-			
-			// TODO: make sure they enter something
-			test = new Scanner(System.in).nextLine();
-			id = this.db.addTest(test);
-			
-			System.out.println(test + " added (ID " + id + ")");
-		}
-		return id;
-	}
-	*/
 	
 	private String padString (String string, int length) {
 		char padChar = ' ';
@@ -261,23 +242,65 @@ public class TestInterfaceCli {
 		return string;
 	}
 	
+	private Integer[] getAllTestIds() {
+		return this.db.getAllTestIds();
+	}
+	
+	private List<Integer> getTestIdsInRange(String date1, String date2) {
+		try {
+			return this.db.getTestIdsInRange(date1, date2);
+		} catch (ParseException e) { return null; }
+	}
+	
 	public void runTest() {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
 
-		this.newStudents(2);
+		int s1 = this.addStudent("Ben");
+		int s2 = this.addStudent("Sharlo");
+		int s3 = this.addStudent("Raehik");
+		int s4 = this.addStudent("Charlie");
+
+		int t1 = this.addTest("Computer Science 1", "Yr. 12 CS", "17/09/13");
+		int t2 = this.addTest("Computer Science 2", "Yr. 12 CS", "17/09/15");
+		int t3 = this.addTest("Computer Science 3", "Yr. 12 CS", "17/09/14");
+
+		this.setStudentResult(s1, t1, 100);
+		this.setStudentResult(s1, t2, 90);
+		this.setStudentResult(s1, t3, 80);
+		this.setStudentResult(s2, t1, 70);
+		this.setStudentResult(s2, t2, 60);
+		this.setStudentResult(s2, t3, 50);
+		this.setStudentResult(s3, t1, 40);
+		this.setStudentResult(s3, t2, 30);
+		this.setStudentResult(s3, t3, 20);
+		this.setStudentResult(s4, t1, 10);
+		this.setStudentResult(s4, t2, 75);
+		this.setStudentResult(s4, t3, 83);
+		
+		this.printDatabase(this.getAllStudentIds(), this.getAllTestIds());
+		List<Integer> testsInRange1 = this.getTestIdsInRange("16/09/14", "22/09/14");
+		Integer[] testsInRange = testsInRange1.toArray(new Integer[testsInRange1.size()]);
+		this.printDatabase(new Integer[] {0, 1}, testsInRange);
+		
+		/*
+		int t4 = this.addTest("Computer Science 1", "Yr. 12 CS", "21/09/14");
+		int t5 = this.addTest("Computer Science 1", "Yr. 12 CS", "29/10/14");
+		
+		int s5 = this.addStudent("Dan");
+		
 		int test1 = this.newTest();
-		this.setTestResults(test1);
-		this.printDatabase();
+		this.printDatabase(this.getAllStudentIds(), this.getTestIdsInRange("20/09/14", "22/09/14"));
 		
 		this.removeStudent(1);
 		this.newStudents(1);
 		int test2 = this.newTest();
 		this.setTestResults(test2);
-		this.printDatabase();
+		this.printDatabase(this.getAllStudentIds(), this.getAllTestIds());
 		
 		this.removeTest(test1);
-		this.printDatabase();
+		this.printDatabase(this.getAllStudentIds(), this.getAllTestIds());
+		*/
 	}
 	
 	public static void main(String[] args) {
