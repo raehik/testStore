@@ -117,6 +117,7 @@ public class TestDatabase {
 		else if (percent >= 60) { return "C"; }
 		else if (percent >= 50) { return "D"; }
 		else if (percent >= 40) { return "E"; }
+        // TODO: throw an exception for this!!
 		else if (percent == -1) { return "-"; }
 		else { return "U"; } // below 40%
 	}
