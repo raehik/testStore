@@ -31,30 +31,30 @@ public class TestDatabase {
 		return this.students.get(id).getName();
 	}
 
-	public int getStudentResult(int studentId, int testId) {
-		return this.students.get(studentId).getTestResult(testId);
+	public int getStudentResult(int sId, int tId) {
+		return this.students.get(sId).getTestResult(tId);
 	}
 
-	public void setStudentResult(int studentId, int testId, int percent)
+	public void setStudentResult(int sId, int tId, int percent)
 		throws IndexOutOfBoundsException {
-		// Set Student `studentId`'s result for Test `testId` to `percent`, if between -1 and 100
+		// Set Student `sId`'s result for Test `tId` to `percent` if valid
 		if (percent >= 0 && percent <= 100) {
-			this.students.get(studentId).setTestResult(testId, percent);
+			this.students.get(sId).setTestResult(tId, percent);
 		} else {
 			throw new IndexOutOfBoundsException("Percentage out of bounds");
 		}
 	}
 
-	public void removeStudentResult(int studentId, int testId) {
-		this.students.get(studentId).removeTestResult(testId);
+	public void removeStudentResult(int sId, int tId) {
+		this.students.get(sId).removeTestResult(tId);
 	}
 
 	public Integer[] getAllStudentIds() {
 		return this.students.keySet().toArray(new Integer[this.students.size()]);
 	}
 
-	public void removeStudent(int studentId) {
-		this.students.remove(studentId);
+	public void removeStudent(int sId) {
+		this.students.remove(sId);
 	}
 
 	public int addTest(String name, String set, String date) {
@@ -101,12 +101,12 @@ public class TestDatabase {
 		return validTests.toArray(new Integer[validTests.size()]);
 	}
 
-	public void removeTest(int testId) {
-		// Removes test testId and all associated students' results.
+	public void removeTest(int tId) {
+		// Removes test tId and all associated students' results.
 		for (Integer id : this.getAllStudentIds()) {
-			this.removeStudentResult(id, testId);
+			this.removeStudentResult(id, tId);
 		}
-		this.tests.remove(testId);
+		this.tests.remove(tId);
 	}
 
 	public String toGrade(int percent) {
