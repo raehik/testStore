@@ -111,8 +111,8 @@ public class TestInterfaceCli {
 		return id;
 	}
 	
-	public void setResults(int testId) {
-		// Set all students' results for test `testId`.
+	public void setResults(int tId) {
+		// Set all students' results for test `tId`.
 		
 		int percent;
 		boolean badInput;
@@ -127,7 +127,7 @@ public class TestInterfaceCli {
 				
 				// setStudentTestResult checks for percentage
 				try {
-					this.db.setStudentResult(id, testId, percent);
+					this.db.setStudentResult(id, tId, percent);
 				} catch (IndexOutOfBoundsException e) {
 					System.out.println("ERROR: not a percentage (0-100)");
 					badInput = true;
@@ -137,18 +137,18 @@ public class TestInterfaceCli {
 		}
 	}
 	
-	public void printDatabase(Integer[] studentIds, Integer[] testIds) {
+	public void printDatabase(Integer[] sIds, Integer[] tIds) {
 		// Print the entire student-test-result database in a table format.
 		
 		int longestName = 12;
-		for (Integer sId : studentIds)
+		for (Integer sId : sIds)
 			longestName = Math.max(longestName, this.db.getStudentName(sId).length());
 		
 		// print header
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | "
 			+ ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
 		
-		for (Integer tId : testIds) {
+		for (Integer tId : tIds) {
 			headerRow += " | ";
 			String testName = this.db.getTestName(tId);
 			int headerLength = Math.max(9, testName.length());
@@ -160,11 +160,11 @@ public class TestInterfaceCli {
 		System.out.println(headerBorder);
 		
 		// print table contents
-		for (Integer sId : studentIds) {
+		for (Integer sId : sIds) {
 			String row = ANSI_RED + String.format("%010d", sId) + ANSI_RESET + " | ";
 			row += ANSI_GREEN + padString(this.db.getStudentName(sId), longestName) + ANSI_RESET;
-			for (Integer testId: testIds) {
-				int result = this.db.getStudentResult(sId, testId);
+			for (Integer tId: tIds) {
+				int result = this.db.getStudentResult(sId, tId);
 				row += " | ";
 				String gradeCell;
 				if (result == -1) {
@@ -173,7 +173,7 @@ public class TestInterfaceCli {
 					gradeCell = padString(result, 3, ' ', true) + "%";
 					gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
 				}
-				int testCellLength = Math.max(this.db.getTestName(testId).length(), 9);
+				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
 				row += ANSI_CYAN + padString(gradeCell, testCellLength) + ANSI_RESET;
 			}
 			System.out.println(row);
