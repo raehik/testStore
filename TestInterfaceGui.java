@@ -146,8 +146,20 @@ public class TestInterfaceGui {
 					}
 				}
 				*/
+				
+				// Test view
+				// =========
 				Integer[] tIds = db.getMatchingTestIds(tName.getText());
 				Integer tId = tIds[0];
+				
+				String[] columnNames = {
+						"Last Name",
+                        "First Name",
+                        "Result"};
+				
+				Object[][] data = {
+						{ ""
+				}
 				
 				for (Integer sId : db.getAllStudentIds()) {
 					
