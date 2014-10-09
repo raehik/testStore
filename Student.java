@@ -3,7 +3,8 @@ package testStore;
 import java.util.HashMap;
 
 public class Student {
-	private String name;
+	private String firstName;
+	private String lastName;
 	
 	// results are stored as a hashmap of test identifier -> result
 	// e.g. 1 -> 56
@@ -12,14 +13,18 @@ public class Student {
 	// implementation may be very useful in any classes using this one.
 	private HashMap<Integer, Integer> results;
 	
-	public Student(String name) {
-		// TODO: remove trailing whitespace from name
-		this.name = name;
+	public Student(String firstName, String lastName) {
+		this.firstName = firstName.trim();
+		this.lastName = lastName.trim();
 		this.results = new HashMap<Integer, Integer>();
 	}
 	
-	public String getName() {
-		return this.name;
+	public String firstName() {
+		return this.firstName;
+	}
+	
+	public String lastName() {
+		return this.lastName;
 	}
 	
 	public int getTestResult(int testId) {
