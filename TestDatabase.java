@@ -30,6 +30,18 @@ public class TestDatabase {
 	public String getStudentName(int id) {
 		return this.students.get(id).getName();
 	}
+	
+	public Integer[] getMatchingStudentIds(String name) {
+		List<Integer> matches = new ArrayList<Integer>();
+		
+		for (int id : this.students.keySet()) {
+			if (name.equals(this.students.get(id).getName())) {
+				matches.add(id);
+			}
+		}
+		
+		return matches.toArray(new Integer[matches.size()]);
+	}
 
 	public int getStudentResult(int sId, int tId) {
 		return this.students.get(sId).getTestResult(tId);
@@ -66,6 +78,18 @@ public class TestDatabase {
 
 	public String getTestName(int id) {
 		return this.tests.get(id).getName();
+	}
+	
+	public Integer[] getMatchingTestIds(String name) {
+		List<Integer> matches = new ArrayList<Integer>();
+		
+		for (int id : this.tests.keySet()) {
+			if (name.equals(this.tests.get(id).getName())) {
+				matches.add(id);
+			}
+		}
+		
+		return matches.toArray(new Integer[matches.size()]);
 	}
 
 	public String getTestSet(int id) {
