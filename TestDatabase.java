@@ -20,22 +20,41 @@ public class TestDatabase {
 		this.tests = new HashMap<Integer, Test>();
 	}
 
-	public int addStudent(String name) {
+	public int addStudent(String firstName, String lastName) {
 		int id = this.nextStudentId;
-		this.students.put(id, new Student(name));
+		this.students.put(id, new Student(firstName, lastName));
 		this.nextStudentId++;
 		return id;
 	}
 
-	public String getStudentName(int id) {
-		return this.students.get(id).getName();
+	public String getStudentFirstName(int id) {
+		return this.students.get(id).firstName();
 	}
 	
-	public Integer[] getMatchingStudentIds(String name) {
+	public String getStudentLastName(int id) {
+		return this.students.get(id).lastName();
+	}
+	
+	public Integer[] getMatchingStudentIds(String[] name) {
 		List<Integer> matches = new ArrayList<Integer>();
 		
 		for (int id : this.students.keySet()) {
-			if (name.equals(this.students.get(id).getName())) {
+			System.out.println("testing " + this.students.get(id).firstName() + " " + this.students.get(id).lastName());
+			System.out.println("vs      " + name[0] + " " + name[1]);
+			boolean firstCorrect = false, lastCorrect = false;
+			
+			// don't check a name if it is empty
+			if (name[0] == null || name[0].equals(this.students.get(id).firstName())) {
+				System.out.println("first match");
+				firstCorrect = true;
+			}
+			
+			if (name[1] == null || name[1].equals(this.students.get(id).lastName())) {
+				System.out.println("last match");
+				lastCorrect = true;
+			}
+			
+			if (lastCorrect && firstCorrect) {
 				matches.add(id);
 			}
 		}
@@ -144,25 +163,5 @@ public class TestDatabase {
         // TODO: throw an exception for this!!
 		else if (percent == -1) { return "-"; }
 		else { return "U"; } // below 40%
-	}
-	
-	public Integer[] studentId(String name) {
-		List<Integer> matchingIds = new ArrayList<Integer>();
-		for (Integer id : this.getAllStudentIds()) {
-			if (name.equals(this.students.get(id).getName())) {
-				matchingIds.add(id);
-			}
-		}
-		return matchingIds.toArray(new Integer[matchingIds.size()]);
-	}
-	
-	public Integer[] testId(String name) {
-		List<Integer> matchingIds = new ArrayList<Integer>();
-		for (Integer id : this.getAllTestIds()) {
-			if (name.equals(this.tests.get(id).getName())) {
-				matchingIds.add(id);
-			}
-		}
-		return matchingIds.toArray(new Integer[matchingIds.size()]);
 	}
 }
