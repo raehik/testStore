@@ -236,6 +236,9 @@ public class TestInterfaceCli {
 		int s2 = this.db.addStudent("Sharlo");
 		int s3 = this.db.addStudent("Raehik");
 		int s4 = this.db.addStudent("Charlie");
+		int s5 = this.db.addStudent("Ben");
+		
+		System.out.println(this.db.getMatchingStudentIds("Ben")[0] + ", " + this.db.getMatchingStudentIds("Ben")[1]);
 
 		int t1 = this.db.addTest("Computer Science 1", "Yr. 12 CS", "17/09/13");
 		int t2 = this.db.addTest("Computer Science 2", "Yr. 12 CS", "17/09/15");
