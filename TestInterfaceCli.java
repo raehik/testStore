@@ -88,11 +88,12 @@ public class TestInterfaceCli {
 		
 		for (int i = 0; i < num; i++) {
 			// prompt for name
-			String name = this.getLine("Student " + (i + 1) + "/" + num + " name: ");
+			String firstName = this.getLine("Student " + (i + 1) + "/" + num + " first name: ");
+			String lastName = this.getLine("Student " + (i + 1) + "/" + num + " last name: ");
 			
-			int id = this.db.addStudent(name);
+			int id = this.db.addStudent(lastName, firstName);
 			
-			System.out.println(name + " added (ID " + id + ")");
+			System.out.println(firstName + " " + lastName + " added (ID " + id + ")");
 		}
 	}
 	
@@ -123,7 +124,7 @@ public class TestInterfaceCli {
 				badInput = false;
 				
 				// prompt for percentage
-				percent = this.promptPositiveInt("Result for " + this.db.getStudentName(id) + " (ID " + id + ") (%): ");
+				percent = this.promptPositiveInt("Result for " + this.db.getStudentLastName(id) + ", " + this.db.getStudentFirstName(id) + " (ID " + id + ") (%): ");
 				
 				// setStudentTestResult checks for percentage
 				try {
@@ -142,7 +143,7 @@ public class TestInterfaceCli {
 		
 		int longestName = 12;
 		for (Integer sId : sIds)
-			longestName = Math.max(longestName, this.db.getStudentName(sId).length());
+			longestName = Math.max(longestName, this.db.getStudentLastName(sId).length());
 		
 		// print header
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | "
@@ -162,7 +163,7 @@ public class TestInterfaceCli {
 		// print table contents
 		for (Integer sId : sIds) {
 			String row = ANSI_RED + String.format("%010d", sId) + ANSI_RESET + " | ";
-			row += ANSI_GREEN + padString(this.db.getStudentName(sId), longestName) + ANSI_RESET;
+			row += ANSI_GREEN + padString(this.db.getStudentLastName(sId), longestName) + ANSI_RESET;
 			for (Integer tId: tIds) {
 				int result = this.db.getStudentResult(sId, tId);
 				row += " | ";
@@ -232,13 +233,13 @@ public class TestInterfaceCli {
 		// initialise a database for holding student & result data
 		this.db = new TestDatabase();
 
-		int s1 = this.db.addStudent("Ben");
-		int s2 = this.db.addStudent("Sharlo");
-		int s3 = this.db.addStudent("Raehik");
-		int s4 = this.db.addStudent("Charlie");
-		int s5 = this.db.addStudent("Ben");
+		int s1 = this.db.addStudent("Ben", "Orchard");
+		int s2 = this.db.addStudent("Sharlo", "osu!");
+		int s3 = this.db.addStudent("Raehik", "Lerna");
+		int s4 = this.db.addStudent("Charlie", "Orchard");
+		int s5 = this.db.addStudent("Ben", "Raehik");
 		
-		System.out.println(this.db.getMatchingStudentIds("Ben")[0] + ", " + this.db.getMatchingStudentIds("Ben")[1]);
+		System.out.println(this.db.getMatchingStudentIds(new String[] {"Ben", null})[0] + ", " + this.db.getMatchingStudentIds(new String[] {null, "Orchard"})[1]);
 
 		int t1 = this.db.addTest("Computer Science 1", "Yr. 12 CS", "17/09/13");
 		int t2 = this.db.addTest("Computer Science 2", "Yr. 12 CS", "17/09/15");
