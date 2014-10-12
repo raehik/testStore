@@ -15,17 +15,20 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JScrollPane;
 
 public class TestInterfaceGui {
 	private TestDatabase db;
 
 	private JFrame frame;
-	private JTextField sName;
+	private JTextField sFirstName;
+	private JTextField sLastName;
 	private JTextField tName;
 	private JTextField date1;
 	private JTextField date2;
-	private JPanel resultsPanel;
-	private JTable table;
+	private JTable results;
+	private JPanel testPanel;
+	private JScrollPane resultsPanel;
 
 	/**
 	 * Launch the application.
@@ -53,11 +56,11 @@ public class TestInterfaceGui {
 	private void formTest() {
 		this.db = new TestDatabase();
 
-		int s1 = this.db.addStudent("Ben");
-		int s2 = this.db.addStudent("Sharlo");
-		int s3 = this.db.addStudent("Raehik");
-		int s4 = this.db.addStudent("Charlie");
-		int s5 = this.db.addStudent("Ben");
+		int s1 = this.db.addStudent("Ben", "Orchard");
+		int s2 = this.db.addStudent("Sharlo", "osu!");
+		int s3 = this.db.addStudent("Raehik", "Lerna");
+		int s4 = this.db.addStudent("Charlie", "Orchard");
+		int s5 = this.db.addStudent("Ben", "Raehik");
 		
 		//System.out.println(this.db.getMatchingStudentIds("Ben")[0] + ", " + this.db.getMatchingStudentIds("Ben")[1]);
 
@@ -89,15 +92,22 @@ public class TestInterfaceGui {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JPanel namePanel = new JPanel();
-		frame.getContentPane().add(namePanel);
+		JPanel studentPanel = new JPanel();
+		frame.getContentPane().add(studentPanel);
 		
-		sName = new JTextField();
-		namePanel.add(sName);
-		sName.setColumns(10);
+		sFirstName = new JTextField();
+		studentPanel.add(sFirstName);
+		sFirstName.setColumns(10);
+		
+		sLastName = new JTextField();
+		studentPanel.add(sLastName);
+		sLastName.setColumns(10);
+		
+		testPanel = new JPanel();
+		frame.getContentPane().add(testPanel);
 		
 		tName = new JTextField();
-		namePanel.add(tName);
+		testPanel.add(tName);
 		tName.setColumns(10);
 		
 		JPanel datePanel = new JPanel();
@@ -117,36 +127,14 @@ public class TestInterfaceGui {
 		JButton searchButton = new JButton("Go");
 		searchPanel.add(searchButton);
 		
-		resultsPanel = new JPanel();
+		resultsPanel = new JScrollPane();
 		frame.getContentPane().add(resultsPanel);
 		
-		table = new JTable();
-		table.getColumnModel().getColumn(0).setPreferredWidth(123);
-		table.getColumnModel().getColumn(1).setPreferredWidth(97);
-		resultsPanel.add(table);
+		results = new JTable();
+		resultsPanel.setViewportView(results);
 		
 		searchButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				/*Integer[] sIds = db.getMatchingStudentIds(sName.getText());
-				Integer[] tIds = db.getMatchingTestIds(tName.getText());
-				
-				if (sIds.length == 0) {
-					sIds = db.getAllStudentIds();
-				}
-				
-				if (tIds.length == 0) {
-					tIds = db.getAllTestIds();
-				}
-				//String sDate1 = date1.getText();
-				//String sDate2 = date2.getText();
-				for (Integer sId : sIds) {
-					for (Integer tId : tIds) {
-						System.out.println(""+sId + tId);
-						System.out.println(db.getStudentResult(sId, tId));
-					}
-				}
-				*/
-				
 				// Test view
 				// =========
 				Integer[] tIds = db.getMatchingTestIds(tName.getText());
@@ -155,15 +143,18 @@ public class TestInterfaceGui {
 				String[] columnNames = {
 						"Last Name",
                         "First Name",
-                        "Result"};
+                        "Result" };
 				
-				Object[][] data = {
-						{ ""
-				}
-				
+				Integer[] allIds = db.getAllStudentIds();
+				Object[][] data = new Object[allIds.length][columnNames.length];
+				int i = 0;
 				for (Integer sId : db.getAllStudentIds()) {
-					
+					data[i] = new Object[]{ db.getStudentLastName(sId), db.getStudentFirstName(sId), db.getStudentResult(sId, tId) };
+					i++;
 				}
+				
+				results = new JTable(data, columnNames);
+				resultsPanel.setViewportView(results);
 			}
 		});
 	}
