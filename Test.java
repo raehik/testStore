@@ -21,11 +21,11 @@ public class Test {
 		}
 	}
 	
-	public String getName() {
+	public String name() {
 		return this.name;
 	}
 	
-	public String getSet() {
+	public String set() {
 		return this.set;
 	}
 	

@@ -39,18 +39,14 @@ public class TestDatabase {
 		List<Integer> matches = new ArrayList<Integer>();
 		
 		for (int id : this.students.keySet()) {
-			System.out.println("testing " + this.students.get(id).firstName() + " " + this.students.get(id).lastName());
-			System.out.println("vs      " + name[0] + " " + name[1]);
 			boolean firstCorrect = false, lastCorrect = false;
 			
 			// don't check a name if it is empty
 			if (name[0] == null || name[0].equals(this.students.get(id).firstName())) {
-				System.out.println("first match");
 				firstCorrect = true;
 			}
 			
 			if (name[1] == null || name[1].equals(this.students.get(id).lastName())) {
-				System.out.println("last match");
 				lastCorrect = true;
 			}
 			
@@ -96,23 +92,27 @@ public class TestDatabase {
 	}
 
 	public String getTestName(int id) {
-		return this.tests.get(id).getName();
+		return this.tests.get(id).name();
+	}
+
+	public String getTestSet(int id) {
+		return this.tests.get(id).set();
+	}
+	
+	public Date getTestDate(int id) {
+		return this.tests.get(id).date();
 	}
 	
 	public Integer[] getMatchingTestIds(String name) {
 		List<Integer> matches = new ArrayList<Integer>();
 		
 		for (int id : this.tests.keySet()) {
-			if (name.equals(this.tests.get(id).getName())) {
+			if (name.equals(this.tests.get(id).name())) {
 				matches.add(id);
 			}
 		}
 		
 		return matches.toArray(new Integer[matches.size()]);
-	}
-
-	public String getTestSet(int id) {
-		return this.tests.get(id).getSet();
 	}
 
 	public Integer[] getAllTestIds() {
