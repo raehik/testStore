@@ -1,9 +1,9 @@
 package testStore;
 
+import java.util.Scanner;
+
 import java.text.ParseException;
 import java.util.InputMismatchException;
-import java.util.List;
-import java.util.Scanner;
 
 public class TestInterfaceCli {
 	private TestDatabase db;
