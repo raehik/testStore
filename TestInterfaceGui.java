@@ -2,33 +2,40 @@ package testStore;
 
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-
 import java.awt.FlowLayout;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import javax.swing.JLabel;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JScrollPane;
 
 public class TestInterfaceGui {
 	private TestDatabase db;
 
 	private JFrame frame;
-	private JTextField sFirstName;
-	private JTextField sLastName;
-	private JTextField tName;
+	
+	private JPanel panel_student;
+	private JLabel label_first;
+	private JTextField field_first;
+	private JLabel label_last;
+	private JTextField field_last;
+	private JButton button_student;
+
+	private JPanel testPanel;
+	private JLabel label_test;
+	private JTextField field_test;
 	private JTextField date1;
 	private JTextField date2;
-	private JTable results;
-	private JPanel testPanel;
+	private JButton button_all_tests;
+	
 	private JScrollPane resultsPanel;
+	private JTable results;
 
 	/**
 	 * Launch the application.
@@ -62,8 +69,6 @@ public class TestInterfaceGui {
 		int s4 = this.db.addStudent("Charlie", "Orchard");
 		int s5 = this.db.addStudent("Ben", "Raehik");
 		
-		//System.out.println(this.db.getMatchingStudentIds("Ben")[0] + ", " + this.db.getMatchingStudentIds("Ben")[1]);
-
 		int t1 = this.db.addTest("CS 1", "Yr. 12 CS", "17/09/13");
 		int t2 = this.db.addTest("CS 2", "Yr. 12 CS", "17/09/15");
 		int t3 = this.db.addTest("CS 3", "Yr. 12 CS", "17/09/14");
@@ -80,6 +85,7 @@ public class TestInterfaceGui {
 		this.db.setStudentResult(s4, t1, 10);
 		this.db.setStudentResult(s4, t2, 75);
 		this.db.setStudentResult(s4, t3, 83);
+		this.db.setStudentResult(s5, t3, 81);
 	}
 
 	/**
@@ -92,23 +98,87 @@ public class TestInterfaceGui {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JPanel studentPanel = new JPanel();
-		frame.getContentPane().add(studentPanel);
+		JPanel panel_student = new JPanel();
+		frame.getContentPane().add(panel_student);
 		
-		sFirstName = new JTextField();
-		studentPanel.add(sFirstName);
-		sFirstName.setColumns(10);
+		label_first= new JLabel("First name");
+		panel_student.add(label_first);
 		
-		sLastName = new JTextField();
-		studentPanel.add(sLastName);
-		sLastName.setColumns(10);
+		field_first = new JTextField();
+		panel_student.add(field_first);
+		field_first.setColumns(10);
+		
+		label_last = new JLabel("Last name");
+		panel_student.add(label_last);
+		
+		field_last = new JTextField();
+		panel_student.add(field_last);
+		field_last.setColumns(10);
+		
+		button_student = new JButton("Student results");
+		panel_student.add(button_student);
+		button_student.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// Test view
+				// =========
+				Integer[] tIds = db.getMatchingTestIds(field_test.getText());
+				Integer tId = tIds[0];
+				
+				String[] cols = {
+						"Last Name",
+                        "First Name",
+                        "Result" };
+				
+				Integer[] allStudents = db.getAllStudentIds();
+				Object[][] data = new Object[allStudents.length][cols.length];
+				int i = 0;
+				for (Integer sId : allStudents) {
+					data[i] = new Object[]{ db.getStudentLastName(sId), db.getStudentFirstName(sId), db.getStudentResult(sId, tId) };
+					i++;
+				}
+				
+				results = new JTable(data, cols);
+				resultsPanel.setViewportView(results);
+			}
+		});
 		
 		testPanel = new JPanel();
 		frame.getContentPane().add(testPanel);
 		
-		tName = new JTextField();
-		testPanel.add(tName);
-		tName.setColumns(10);
+		label_test = new JLabel("Test name");
+		testPanel.add(label_test);
+		
+		field_test = new JTextField();
+		testPanel.add(field_test);
+		field_test.setColumns(10);
+		
+		JButton btnTest = new JButton("Get all students");
+		frame.getContentPane().add(btnTest);
+		
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// Test view
+				// =========
+				Integer[] tIds = db.getMatchingTestIds(field_test.getText());
+				Integer tId = tIds[0];
+				
+				String[] cols = {
+						"Last Name",
+                        "First Name",
+                        "Result" };
+				
+				Integer[] allStudents = db.getAllStudentIds();
+				Object[][] data = new Object[allStudents.length][cols.length];
+				int i = 0;
+				for (Integer sId : allStudents) {
+					data[i] = new Object[]{ db.getStudentLastName(sId), db.getStudentFirstName(sId), db.getStudentResult(sId, tId) };
+					i++;
+				}
+				
+				results = new JTable(data, cols);
+				resultsPanel.setViewportView(results);
+			}
+		});
 		
 		JPanel datePanel = new JPanel();
 		frame.getContentPane().add(datePanel);
@@ -124,36 +194,33 @@ public class TestInterfaceGui {
 		JPanel searchPanel = new JPanel();
 		frame.getContentPane().add(searchPanel);
 		
-		JButton searchButton = new JButton("Go");
-		searchPanel.add(searchButton);
-		
 		resultsPanel = new JScrollPane();
 		frame.getContentPane().add(resultsPanel);
 		
 		results = new JTable();
 		resultsPanel.setViewportView(results);
 		
-		searchButton.addActionListener(new ActionListener() {
+		button_all_tests = new JButton("All tests");
+		frame.getContentPane().add(button_all_tests);
+		button_all_tests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// Test view
-				// =========
-				Integer[] tIds = db.getMatchingTestIds(tName.getText());
-				Integer tId = tIds[0];
-				
-				String[] columnNames = {
-						"Last Name",
-                        "First Name",
-                        "Result" };
-				
-				Integer[] allIds = db.getAllStudentIds();
-				Object[][] data = new Object[allIds.length][columnNames.length];
+				// All tests view
+				// ==============
+				String[] cols = {
+						"Date",
+                        "Set",
+                        "Name" };
+
+				Integer[] allTests = db.getAllTestIds();
+				Object[][] data = new Object[allTests.length][cols.length];
 				int i = 0;
-				for (Integer sId : db.getAllStudentIds()) {
-					data[i] = new Object[]{ db.getStudentLastName(sId), db.getStudentFirstName(sId), db.getStudentResult(sId, tId) };
+				
+				for (Integer tId : allTests) {
+					data[i] = new Object[]{ db.getTestDate(tId), db.getTestSet(tId), db.getTestName(tId) };
 					i++;
 				}
 				
-				results = new JTable(data, columnNames);
+				results = new JTable(data, cols);
 				resultsPanel.setViewportView(results);
 			}
 		});
