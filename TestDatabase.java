@@ -8,16 +8,17 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 public class TestDatabase {
-	//		student ID, Student
+	// hashmaps of ID -> object
 	private HashMap<Integer, Student> students;
-	//		test ID, name
-	public HashMap<Integer, Test> tests;
+	private HashMap<Integer, Test> tests;
 
-	private int nextStudentId = 0, nextTestId = 0;
+	private int nextStudentId, nextTestId;
 
 	public TestDatabase() {
 		this.students = new HashMap<Integer, Student>();
 		this.tests = new HashMap<Integer, Test>();
+		this.nextStudentId = 0;
+		this.nextTestId = 0;
 	}
 
 	public int addStudent(String firstName, String lastName) {
@@ -33,29 +34,6 @@ public class TestDatabase {
 	
 	public String getStudentLastName(int id) {
 		return this.students.get(id).lastName();
-	}
-	
-	public Integer[] getMatchingStudentIds(String[] name) {
-		List<Integer> matches = new ArrayList<Integer>();
-		
-		for (int id : this.students.keySet()) {
-			boolean firstCorrect = false, lastCorrect = false;
-			
-			// don't check a name if it is empty
-			if (name[0] == null || name[0].equals(this.students.get(id).firstName())) {
-				firstCorrect = true;
-			}
-			
-			if (name[1] == null || name[1].equals(this.students.get(id).lastName())) {
-				lastCorrect = true;
-			}
-			
-			if (lastCorrect && firstCorrect) {
-				matches.add(id);
-			}
-		}
-		
-		return matches.toArray(new Integer[matches.size()]);
 	}
 
 	public int getStudentResult(int sId, int tId) {
@@ -83,6 +61,36 @@ public class TestDatabase {
 	public void removeStudent(int sId) {
 		this.students.remove(sId);
 	}
+	
+	/**
+	 * Returns the IDs of students with matching names.
+	 * 
+	 * @param nameParts		Holds the testing name parts.
+	 * 						[0] = first, [1] = last.
+	 * 						If a part is null, it is not tested.
+	 * @return				Array of matching IDs.
+	 */
+	public Integer[] getMatchingStudentIds(String[] nameParts) {
+		List<Integer> matches = new ArrayList<Integer>();
+		
+		// TODO: should I use my own getAllStudentIds method???
+		for (int id : this.students.keySet()) {
+			boolean firstCorrect = false, lastCorrect = false;
+			
+			// if a name is not provided, always correct (so not testing that one)
+			if (nameParts[0] == null || nameParts[0].equals(this.students.get(id).firstName())) {
+				firstCorrect = true;
+			}
+			if (nameParts[1] == null || nameParts[1].equals(this.students.get(id).lastName())) {
+				lastCorrect = true;
+			}
+			if (lastCorrect && firstCorrect) {
+				matches.add(id);
+			}
+		}
+		
+		return matches.toArray(new Integer[matches.size()]);
+	}
 
 	public int addTest(String name, String set, String date) {
 		int id = this.nextTestId;
@@ -102,6 +110,18 @@ public class TestDatabase {
 	public Date getTestDate(int id) {
 		return this.tests.get(id).date();
 	}
+
+	public Integer[] getAllTestIds() {
+		return this.tests.keySet().toArray(new Integer[this.tests.size()]);
+	}
+
+	public void removeTest(int tId) {
+		// Removes test tId and all associated students' results.
+		for (Integer id : this.getAllStudentIds()) {
+			this.removeStudentResult(id, tId);
+		}
+		this.tests.remove(tId);
+	}
 	
 	public Integer[] getMatchingTestIds(String name) {
 		List<Integer> matches = new ArrayList<Integer>();
@@ -113,10 +133,6 @@ public class TestDatabase {
 		}
 		
 		return matches.toArray(new Integer[matches.size()]);
-	}
-
-	public Integer[] getAllTestIds() {
-		return this.tests.keySet().toArray(new Integer[this.tests.size()]);
 	}
 
 	public Integer[] getTestIdsInRange(String date1, String date2) throws ParseException {
@@ -144,16 +160,8 @@ public class TestDatabase {
 		return validTests.toArray(new Integer[validTests.size()]);
 	}
 
-	public void removeTest(int tId) {
-		// Removes test tId and all associated students' results.
-		for (Integer id : this.getAllStudentIds()) {
-			this.removeStudentResult(id, tId);
-		}
-		this.tests.remove(tId);
-	}
-
 	public String toGrade(int percent) {
-		// fixed table of percent -> grade
+		// fixed table defining percents -> grade
 		if (percent >= 90) { return "A*"; }
 		else if (percent >= 80) { return "A"; }
 		else if (percent >= 70) { return "B"; }
@@ -161,7 +169,7 @@ public class TestDatabase {
 		else if (percent >= 50) { return "D"; }
 		else if (percent >= 40) { return "E"; }
         // TODO: throw an exception for this!!
-		else if (percent == -1) { return "-"; }
+		else if (percent == -1) { return "-"; } // test not taken
 		else { return "U"; } // below 40%
 	}
 }

@@ -10,27 +10,21 @@ public class Test {
 	private Date date;
 	
 	public Test(String name, String set, String date) {
-		// remove trailing whitespace from name!
-		this.name = name;
-		this.set = set;
+		// trim leading/trailing whitespace from strings
+		this.name = name.trim();
+		this.set = set.trim();
 		
+		// SimpleDateFormat converts strings -> and compares dates ez
 		SimpleDateFormat simpleDate = new SimpleDateFormat("dd/MM/yy");
 		try {
 			this.date = simpleDate.parse(date);
 		} catch (ParseException e) {
-			// wat do???
+			// TODO: deal with incorrectly formatted date
 		}
 	}
 	
-	public String name() {
-		return this.name;
-	}
-	
-	public String set() {
-		return this.set;
-	}
-	
-	public Date date() {
-		return this.date;
-	}
+	// Ruby attr_reader plz
+	public String name() { return this.name; }
+	public String set() { return this.set; }
+	public Date date() { return this.date; }
 }

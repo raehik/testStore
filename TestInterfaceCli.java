@@ -1,13 +1,13 @@
 package testStore;
 
 import java.util.Scanner;
-
 import java.text.ParseException;
 import java.util.InputMismatchException;
 
 public class TestInterfaceCli {
 	private TestDatabase db;
 	
+	// terminal colour escape code definitions
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_BLACK = "\u001B[30m";
 	public static final String ANSI_RED = "\u001B[31m";
@@ -17,7 +17,19 @@ public class TestInterfaceCli {
 	public static final String ANSI_PURPLE = "\u001B[35m";
 	public static final String ANSI_CYAN = "\u001B[36m";
 	public static final String ANSI_WHITE = "\u001B[37m";
+
+	private Scanner scanner;
 	
+	public TestInterfaceCli() {
+		scanner = new Scanner(System.in);
+	}
+	
+	/**
+	 * Force a non-null string to be entered, prompting with prompt.
+	 * 
+	 * @param prompt	String to prompt every time.
+	 * @return			Entered (non-null) string.
+	 */
 	private String getLine(String prompt) {
 		boolean badInput = false;
 		String line;
@@ -26,7 +38,7 @@ public class TestInterfaceCli {
 			badInput = false;
 			
 			System.out.print(prompt);
-			line = new Scanner(System.in).nextLine();
+			line = scanner.nextLine();
 			
 			if (line.isEmpty()) {
 				System.out.println("ERROR: nothing entered");
@@ -37,13 +49,15 @@ public class TestInterfaceCli {
 		return line;
 	}
 	
+	/**
+	 * Try to get a positive integer from stdin.
+	 * 
+	 * If an integer is not entered, return -2.
+	 * If it is not positive, return -1.
+	 * 
+	 * @return	Input (either -2, -1 or the entered integer)
+	 */
 	private int getPositiveInt() {
-		// Try to get a positive integer from stdin.
-		//
-		// If an integer is not entered, return -2.
-		// If it is not positive, return -1.
-		//
-		
 		int num;
 		
 		try {
@@ -52,16 +66,16 @@ public class TestInterfaceCli {
 			return -2;
 		}
 		
-		if (num < 0) { return -1; } else { return num; }
+		if (num < 0) return -1; else return num;
 	}
 	
+	/**
+	 * Force a positive integer to be entered.
+	 * 
+	 * @param prompt	Prompt to show every time.
+	 * @return			The (valid) integer entered.
+	 */
 	private int promptPositiveInt(String prompt) {
-		// Force a positive integer to be entered.
-		//
-		// Prompts using string `prompt`.
-		// (keeps prompting until we get valid input)
-		//
-		
 		boolean badInput;
 		int num;
 		
@@ -83,8 +97,12 @@ public class TestInterfaceCli {
 		return num;
 	}
 	
+	/**
+	 * Add num students, prompting for names & printing their ID.
+	 * 
+	 * @param num	The number of students to add.
+	 */
 	public void newStudents(int num) {
-		// Add `num` students, prompting for names & printing their ID.
 		
 		for (int i = 0; i < num; i++) {
 			// prompt for name
@@ -97,10 +115,12 @@ public class TestInterfaceCli {
 		}
 	}
 	
+	/**
+	 * Prompt for info and use it to create a new test.
+	 * 
+	 * @return	The ID of the created test.
+	 */
 	public int newTest() {
-		// Prompt for info to use to create a new test with, then do that.
-		
-		// get lotsa info
 		String name = this.getLine("Test name: ");
 		String set = this.getLine("Class/set: ");
         String date = this.getLine("Date: ");
@@ -108,12 +128,15 @@ public class TestInterfaceCli {
 		int id = this.db.addTest(name, set, date);
 		
 		System.out.println(name + " added (ID " + id + ")");
-		
 		return id;
 	}
 	
+	/**
+	 * Prompt & set all students' results for test testId.
+	 * 
+	 * @param tId	Test to prompt for results.
+	 */
 	public void setResults(int tId) {
-		// Set all students' results for test `tId`.
 		
 		int percent;
 		boolean badInput;
@@ -138,14 +161,19 @@ public class TestInterfaceCli {
 		}
 	}
 	
+	/**
+	 * Print out part of the student test result database in a table.
+	 * 
+	 * @param sIds		Student IDs to use.
+	 * @param tIds		Test IDs to use.
+	 */
 	public void printDatabase(Integer[] sIds, Integer[] tIds) {
-		// Print the entire student-test-result database in a table format.
-		
 		int longestName = 12;
 		for (Integer sId : sIds)
 			longestName = Math.max(longestName, this.db.getStudentLastName(sId).length());
 		
-		// print header
+		// header
+		// ======
 		String headerRow = ANSI_RED + "Student ID" + ANSI_RESET + " | "
 			+ ANSI_GREEN + padString("Student name", longestName) + ANSI_RESET;
 		
@@ -160,18 +188,19 @@ public class TestInterfaceCli {
 		String headerBorder = headerRow.replaceAll("\u001B\\[\\d\\d?m", "").replaceAll(".", "-");
 		System.out.println(headerBorder);
 		
-		// print table contents
+		// table contents
+		// ==============
 		for (Integer sId : sIds) {
 			String row = ANSI_RED + String.format("%010d", sId) + ANSI_RESET + " | ";
 			row += ANSI_GREEN + padString(this.db.getStudentLastName(sId), longestName) + ANSI_RESET;
 			for (Integer tId: tIds) {
-				int result = this.db.getStudentResult(sId, tId);
+				Integer result = this.db.getStudentResult(sId, tId);
 				row += " | ";
 				String gradeCell;
 				if (result == -1) {
 					gradeCell = padString(" N/A", 4);
 				} else {
-					gradeCell = padString(result, 3, ' ', true) + "%";
+					gradeCell = padString(result.toString(), 3) + "%";
 					gradeCell += " (" + padString(this.db.toGrade(result) + ")", 3);
 				}
 				int testCellLength = Math.max(this.db.getTestName(tId).length(), 9);
@@ -181,35 +210,9 @@ public class TestInterfaceCli {
 		}
 	}
 	
-	private String padString (String string, int length) {
+	private String padString(String string, int length) {
 		char padChar = ' ';
 		boolean rightAlign = false;
-		return padString (string, length, padChar, rightAlign);
-	}
-	
-	private String padString (Integer intString, int length) {
-		char padChar = ' ';
-		boolean rightAlign = false;
-		String string = intString.toString();
-		return padString (string, length, padChar, rightAlign);
-	}
-	
-	private String padString (String string, int length, char padChar) {
-		boolean rightAlign = false;
-		return padString (string, length, padChar, rightAlign);
-	}
-	
-	private String padString (Integer intString, int length, char padChar) {
-		boolean rightAlign = false;
-		String string = intString.toString();
-		return padString (string, length, padChar, rightAlign);
-	}
-	private String padString (Integer intString, int length, char padChar, boolean rightAlign) {
-		String string = intString.toString();
-		return padString (string, length, padChar, rightAlign);
-	}
-	
-	private String padString (String string, int length, char padChar, boolean rightAlign) {
 		String paddingString = "";
 		for (int i = 0; i<length; i++) paddingString += padChar;
 		if (rightAlign == true) string = new StringBuilder(string).reverse().toString();
@@ -257,6 +260,7 @@ public class TestInterfaceCli {
 		this.db.setStudentResult(s4, t1, 10);
 		this.db.setStudentResult(s4, t2, 75);
 		this.db.setStudentResult(s4, t3, 83);
+		this.db.setStudentResult(s5, t2, 38);
 		
 		this.printDatabase(this.db.getAllStudentIds(), this.getAllTestIds());
 		this.printDatabase(new Integer[] {0, 1}, this.getTestIdsInRange("16/09/14", "22/09/14"));

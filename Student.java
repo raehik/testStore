@@ -3,30 +3,34 @@ package testStore;
 import java.util.HashMap;
 
 public class Student {
-	private String firstName;
-	private String lastName;
+	private String firstName, lastName;
 	
-	// results are stored as a hashmap of test identifier -> result
+	// stored as a hashmap of test identifier -> result
 	// e.g. 1 -> 56
 	// if student did not take a test, no identifier will exist for it.
-	// results are not forced to be between 0 and 100 -- however such an
-	// implementation may be very useful in any classes using this one.
+	// results can be any integer, not just a percentage between 0 and
+	// 100 -- it is up to the class using Student to define any such
+	// restrictions
 	private HashMap<Integer, Integer> results;
 	
 	public Student(String firstName, String lastName) {
+		// trim leading/trailing whitespace from strings
 		this.firstName = firstName.trim();
 		this.lastName = lastName.trim();
 		this.results = new HashMap<Integer, Integer>();
 	}
 	
-	public String firstName() {
-		return this.firstName;
-	}
+	public String firstName() { return this.firstName; }
+	public String lastName() { return this.lastName; }
 	
-	public String lastName() {
-		return this.lastName;
-	}
-	
+	/**
+	 * Return the result of test testId for a student.
+	 * 
+	 * Returns -1 if the student did not take the test testId.
+	 * 
+	 * @param testId	The ID of the test to use.
+	 * @return			The result associated with testId.
+	 */
 	public int getTestResult(int testId) {
 		try {
 			return this.results.get(testId);
